@@ -1,0 +1,3512 @@
+{
+  "56544237-6cee-4c28-9aea-9ea1b5ba6927": {
+    "incident_id": "56544237-6cee-4c28-9aea-9ea1b5ba6927",
+    "status": "completed",
+    "created_at": "2026-02-17T13:17:14.571420+00:00",
+    "updated_at": "2026-02-17T13:17:14.589488+00:00",
+    "raw_input_summary": "3 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.87,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "brute_force",
+              "description": "47 failed SSH login attempts from 192.168.1.105 within 3 minutes",
+              "severity": "high"
+            },
+            {
+              "pattern_type": "privilege_escalation",
+              "description": "User 'jdoe' escalated to root via sudo 12 seconds after first successful login",
+              "severity": "critical"
+            }
+          ],
+          "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalated privileges to root within seconds, indicating automated post-exploitation tooling.",
+          "events_analyzed": 3
+        },
+        "execution_time_ms": 4.94
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "brute_force",
+          "confidence_score": 0.92,
+          "explanation": "The pattern of 47 failed SSH login attempts in rapid succession from a single IP address, followed by a successful login and immediate privilege escalation, is a textbook brute-force attack combined with automated post-exploitation. The timing and volume are consistent with tools like Hydra or Medusa.",
+          "recommended_action": "block_ip"
+        },
+        "execution_time_ms": 1.41
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "ssh-gateway-01",
+            "db-primary-01",
+            "app-server-01",
+            "app-server-02"
+          ],
+          "risk_level": "critical",
+          "estimated_downtime": "2-4 hours",
+          "estimated_financial_impact": "$45,000 - $120,000",
+          "blast_radius": "high",
+          "severity_score": 9.2,
+          "scenario_description": "With root access, the attacker could exfiltrate the primary database, install persistent backdoors across application servers, and pivot to internal network segments. Estimated data at risk: 2.3M customer records."
+        },
+        "execution_time_ms": 1.77
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.92,
+          "threshold": 0.85,
+          "actions_taken": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:17:14.581750+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.03
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:17:14.583267+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:17:14.581750+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.03
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:17:14.583267+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ]
+        },
+        "execution_time_ms": 3.9
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "A coordinated cyber attack was detected and automatically mitigated. An attacker attempted to breach our SSH gateway using brute-force methods, briefly gaining elevated access before our automated defense system blocked the attack and isolated affected systems. No data loss occurred. Estimated prevented damage: $45,000-$120,000.",
+          "technical_report": "## Incident Timeline\n\n- **22:14:03 UTC** \u2014 First failed SSH login from 192.168.1.105\n- **22:17:12 UTC** \u2014 47th failed attempt; successful login with user 'jdoe'\n- **22:17:24 UTC** \u2014 Privilege escalation to root via sudo\n- **22:17:25 UTC** \u2014 Anomaly detected by Nova Log Intelligence\n- **22:17:26 UTC** \u2014 IP blocked, user disabled, firewall updated\n\n## Indicators of Compromise\n- Source IP: 192.168.1.105\n- Targeted service: SSH (port 22)\n- Compromised account: jdoe\n\n## Remediation\n- IP permanently blocked\n- Account disabled pending investigation\n- SSH gateway isolated for forensic analysis\n- Firewall rules updated to restrict SSH access\n\n## Prevention Recommendations\n- Implement SSH key-only authentication\n- Deploy fail2ban with stricter thresholds\n- Enable multi-factor authentication for privileged accounts\n- Review sudo policies and implement least-privilege access",
+          "prevention_recommendations": [
+            "Implement SSH key-only authentication",
+            "Deploy fail2ban with stricter thresholds",
+            "Enable multi-factor authentication",
+            "Implement account lockout policies",
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "Nova's multi-agent analysis classified this incident as a brute-force attack with high confidence (92%). The classification was driven by the detection of 47 failed SSH login attempts from a single source IP within a 3-minute window \u2014 a pattern consistent with automated credential-stuffing tools. The anomaly score of 0.87 exceeded the baseline threshold by 3.2 standard deviations. Confidence was further reinforced by similarity to 2 prior incidents in the vector memory store (avg similarity: 0.84), both confirmed brute-force attacks. The immediate privilege escalation to root 12 seconds post-breach elevated the severity from 'high' to 'critical', triggering automated containment via Nova Act.",
+          "metadata": {
+            "generated_at": "2026-02-17T13:17:14.587489+00:00",
+            "incident_id": "56544237-6cee-4c28-9aea-9ea1b5ba6927"
+          }
+        },
+        "execution_time_ms": 3.38
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-17T13:17:14.571420+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-17T13:17:14.571420+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:17:14.576903+00:00",
+        "decision": "Found 0 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-17T13:17:14.576903+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:17:14.577911+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:17:14.580234+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:17:14.584267+00:00",
+        "decision": "Confidence 92.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-17T13:17:14.584267+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:17:14.589488+00:00",
+        "decision": "Pipeline completed in 18.69ms"
+      }
+    ]
+  },
+  "bc7fb4dd-aef0-46f3-a2a3-214dcb3774bf": {
+    "incident_id": "bc7fb4dd-aef0-46f3-a2a3-214dcb3774bf",
+    "status": "completed",
+    "created_at": "2026-02-17T13:17:31.083152+00:00",
+    "updated_at": "2026-02-17T13:17:31.104326+00:00",
+    "raw_input_summary": "3 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.87,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "brute_force",
+              "description": "47 failed SSH login attempts from 192.168.1.105 within 3 minutes",
+              "severity": "high"
+            },
+            {
+              "pattern_type": "privilege_escalation",
+              "description": "User 'jdoe' escalated to root via sudo 12 seconds after first successful login",
+              "severity": "critical"
+            }
+          ],
+          "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalated privileges to root within seconds, indicating automated post-exploitation tooling.",
+          "events_analyzed": 3
+        },
+        "execution_time_ms": 5.77
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "brute_force",
+          "confidence_score": 0.92,
+          "explanation": "The pattern of 47 failed SSH login attempts in rapid succession from a single IP address, followed by a successful login and immediate privilege escalation, is a textbook brute-force attack combined with automated post-exploitation. The timing and volume are consistent with tools like Hydra or Medusa.",
+          "recommended_action": "block_ip",
+          "similar_incidents": [
+            {
+              "incident_id": "56544237-6cee-4c28-9aea-9ea1b5ba6927",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            }
+          ]
+        },
+        "execution_time_ms": 1.63
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "ssh-gateway-01",
+            "db-primary-01",
+            "app-server-01",
+            "app-server-02"
+          ],
+          "risk_level": "critical",
+          "estimated_downtime": "2-4 hours",
+          "estimated_financial_impact": "$45,000 - $120,000",
+          "blast_radius": "high",
+          "severity_score": 9.2,
+          "scenario_description": "With root access, the attacker could exfiltrate the primary database, install persistent backdoors across application servers, and pivot to internal network segments. Estimated data at risk: 2.3M customer records."
+        },
+        "execution_time_ms": 1.87
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.92,
+          "threshold": 0.85,
+          "actions_taken": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:17:31.095140+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.03
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:17:31.097661+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.04
+            }
+          ],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:17:31.095140+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.03
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:17:31.097661+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.04
+            }
+          ]
+        },
+        "execution_time_ms": 4.34
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "A coordinated cyber attack was detected and automatically mitigated. An attacker attempted to breach our SSH gateway using brute-force methods, briefly gaining elevated access before our automated defense system blocked the attack and isolated affected systems. No data loss occurred. Estimated prevented damage: $45,000-$120,000.",
+          "technical_report": "## Incident Timeline\n\n- **22:14:03 UTC** \u2014 First failed SSH login from 192.168.1.105\n- **22:17:12 UTC** \u2014 47th failed attempt; successful login with user 'jdoe'\n- **22:17:24 UTC** \u2014 Privilege escalation to root via sudo\n- **22:17:25 UTC** \u2014 Anomaly detected by Nova Log Intelligence\n- **22:17:26 UTC** \u2014 IP blocked, user disabled, firewall updated\n\n## Indicators of Compromise\n- Source IP: 192.168.1.105\n- Targeted service: SSH (port 22)\n- Compromised account: jdoe\n\n## Remediation\n- IP permanently blocked\n- Account disabled pending investigation\n- SSH gateway isolated for forensic analysis\n- Firewall rules updated to restrict SSH access\n\n## Prevention Recommendations\n- Implement SSH key-only authentication\n- Deploy fail2ban with stricter thresholds\n- Enable multi-factor authentication for privileged accounts\n- Review sudo policies and implement least-privilege access",
+          "prevention_recommendations": [
+            "Implement SSH key-only authentication",
+            "Deploy fail2ban with stricter thresholds",
+            "Enable multi-factor authentication",
+            "Implement account lockout policies",
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "Nova's multi-agent analysis classified this incident as a brute-force attack with high confidence (92%). The classification was driven by the detection of 47 failed SSH login attempts from a single source IP within a 3-minute window \u2014 a pattern consistent with automated credential-stuffing tools. The anomaly score of 0.87 exceeded the baseline threshold by 3.2 standard deviations. Confidence was further reinforced by similarity to 2 prior incidents in the vector memory store (avg similarity: 0.84), both confirmed brute-force attacks. The immediate privilege escalation to root 12 seconds post-breach elevated the severity from 'high' to 'critical', triggering automated containment via Nova Act.",
+          "metadata": {
+            "generated_at": "2026-02-17T13:17:31.101810+00:00",
+            "incident_id": "bc7fb4dd-aef0-46f3-a2a3-214dcb3774bf"
+          }
+        },
+        "execution_time_ms": 3.63
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-17T13:17:31.083152+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-17T13:17:31.083152+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:17:31.090281+00:00",
+        "decision": "Found 1 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-17T13:17:31.090281+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:17:31.091318+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:17:31.093620+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:17:31.097661+00:00",
+        "decision": "Confidence 92.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-17T13:17:31.097661+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:17:31.104326+00:00",
+        "decision": "Pipeline completed in 21.41ms"
+      }
+    ]
+  },
+  "96da9c76-7f12-4c1c-895e-8fe3c3eb903f": {
+    "incident_id": "96da9c76-7f12-4c1c-895e-8fe3c3eb903f",
+    "status": "completed",
+    "created_at": "2026-02-17T13:21:36.258204+00:00",
+    "updated_at": "2026-02-17T13:21:36.276912+00:00",
+    "raw_input_summary": "3 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.87,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "brute_force",
+              "description": "47 failed SSH login attempts from 192.168.1.105 within 3 minutes",
+              "severity": "high"
+            },
+            {
+              "pattern_type": "privilege_escalation",
+              "description": "User 'jdoe' escalated to root via sudo 12 seconds after first successful login",
+              "severity": "critical"
+            }
+          ],
+          "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalated privileges to root within seconds, indicating automated post-exploitation tooling.",
+          "events_analyzed": 3
+        },
+        "execution_time_ms": 4.91
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "brute_force",
+          "confidence_score": 0.92,
+          "explanation": "The pattern of 47 failed SSH login attempts in rapid succession from a single IP address, followed by a successful login and immediate privilege escalation, is a textbook brute-force attack combined with automated post-exploitation. The timing and volume are consistent with tools like Hydra or Medusa.",
+          "recommended_action": "block_ip",
+          "similar_incidents": [
+            {
+              "incident_id": "bc7fb4dd-aef0-46f3-a2a3-214dcb3774bf",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "56544237-6cee-4c28-9aea-9ea1b5ba6927",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            }
+          ]
+        },
+        "execution_time_ms": 1.58
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "ssh-gateway-01",
+            "db-primary-01",
+            "app-server-01",
+            "app-server-02"
+          ],
+          "risk_level": "critical",
+          "estimated_downtime": "2-4 hours",
+          "estimated_financial_impact": "$45,000 - $120,000",
+          "blast_radius": "high",
+          "severity_score": 9.2,
+          "scenario_description": "With root access, the attacker could exfiltrate the primary database, install persistent backdoors across application servers, and pivot to internal network segments. Estimated data at risk: 2.3M customer records."
+        },
+        "execution_time_ms": 1.34
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.92,
+          "threshold": 0.85,
+          "actions_taken": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:21:36.269695+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.02
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:21:36.270697+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:21:36.269695+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.02
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:21:36.270697+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ]
+        },
+        "execution_time_ms": 2.82
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "A coordinated cyber attack was detected and automatically mitigated. An attacker attempted to breach our SSH gateway using brute-force methods, briefly gaining elevated access before our automated defense system blocked the attack and isolated affected systems. No data loss occurred. Estimated prevented damage: $45,000-$120,000.",
+          "technical_report": "## Incident Timeline\n\n- **22:14:03 UTC** \u2014 First failed SSH login from 192.168.1.105\n- **22:17:12 UTC** \u2014 47th failed attempt; successful login with user 'jdoe'\n- **22:17:24 UTC** \u2014 Privilege escalation to root via sudo\n- **22:17:25 UTC** \u2014 Anomaly detected by Nova Log Intelligence\n- **22:17:26 UTC** \u2014 IP blocked, user disabled, firewall updated\n\n## Indicators of Compromise\n- Source IP: 192.168.1.105\n- Targeted service: SSH (port 22)\n- Compromised account: jdoe\n\n## Remediation\n- IP permanently blocked\n- Account disabled pending investigation\n- SSH gateway isolated for forensic analysis\n- Firewall rules updated to restrict SSH access\n\n## Prevention Recommendations\n- Implement SSH key-only authentication\n- Deploy fail2ban with stricter thresholds\n- Enable multi-factor authentication for privileged accounts\n- Review sudo policies and implement least-privilege access",
+          "prevention_recommendations": [
+            "Implement SSH key-only authentication",
+            "Deploy fail2ban with stricter thresholds",
+            "Enable multi-factor authentication",
+            "Implement account lockout policies",
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "Nova's multi-agent analysis classified this incident as a brute-force attack with high confidence (92%). The classification was driven by the detection of 47 failed SSH login attempts from a single source IP within a 3-minute window \u2014 a pattern consistent with automated credential-stuffing tools. The anomaly score of 0.87 exceeded the baseline threshold by 3.2 standard deviations. Confidence was further reinforced by similarity to 2 prior incidents in the vector memory store (avg similarity: 0.84), both confirmed brute-force attacks. The immediate privilege escalation to root 12 seconds post-breach elevated the severity from 'high' to 'critical', triggering automated containment via Nova Act.",
+          "metadata": {
+            "generated_at": "2026-02-17T13:21:36.273582+00:00",
+            "incident_id": "96da9c76-7f12-4c1c-895e-8fe3c3eb903f"
+          }
+        },
+        "execution_time_ms": 2.72
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-17T13:21:36.258204+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-17T13:21:36.258204+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:21:36.265311+00:00",
+        "decision": "Found 2 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-17T13:21:36.265311+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:21:36.267235+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:21:36.268696+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:21:36.271575+00:00",
+        "decision": "Confidence 92.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-17T13:21:36.271575+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:21:36.276912+00:00",
+        "decision": "Pipeline completed in 17.48ms"
+      }
+    ]
+  },
+  "e4a56679-0938-4ada-8d38-033f5a358e0b": {
+    "incident_id": "e4a56679-0938-4ada-8d38-033f5a358e0b",
+    "status": "completed",
+    "created_at": "2026-02-17T13:23:43.908386+00:00",
+    "updated_at": "2026-02-17T13:23:43.930582+00:00",
+    "raw_input_summary": "3 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.87,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "brute_force",
+              "description": "47 failed SSH login attempts from 192.168.1.105 within 3 minutes",
+              "severity": "high"
+            },
+            {
+              "pattern_type": "privilege_escalation",
+              "description": "User 'jdoe' escalated to root via sudo 12 seconds after first successful login",
+              "severity": "critical"
+            }
+          ],
+          "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalated privileges to root within seconds, indicating automated post-exploitation tooling.",
+          "events_analyzed": 3
+        },
+        "execution_time_ms": 4.87
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "brute_force",
+          "confidence_score": 0.92,
+          "explanation": "The pattern of 47 failed SSH login attempts in rapid succession from a single IP address, followed by a successful login and immediate privilege escalation, is a textbook brute-force attack combined with automated post-exploitation. The timing and volume are consistent with tools like Hydra or Medusa.",
+          "recommended_action": "block_ip",
+          "similar_incidents": [
+            {
+              "incident_id": "bc7fb4dd-aef0-46f3-a2a3-214dcb3774bf",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "56544237-6cee-4c28-9aea-9ea1b5ba6927",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "96da9c76-7f12-4c1c-895e-8fe3c3eb903f",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            }
+          ]
+        },
+        "execution_time_ms": 2.4
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "ssh-gateway-01",
+            "db-primary-01",
+            "app-server-01",
+            "app-server-02"
+          ],
+          "risk_level": "critical",
+          "estimated_downtime": "2-4 hours",
+          "estimated_financial_impact": "$45,000 - $120,000",
+          "blast_radius": "high",
+          "severity_score": 9.2,
+          "scenario_description": "With root access, the attacker could exfiltrate the primary database, install persistent backdoors across application servers, and pivot to internal network segments. Estimated data at risk: 2.3M customer records."
+        },
+        "execution_time_ms": 2.12
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.92,
+          "threshold": 0.85,
+          "actions_taken": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:23:43.920582+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.03
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:23:43.923071+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:23:43.920582+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.03
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:23:43.923071+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ]
+        },
+        "execution_time_ms": 3.77
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "A coordinated cyber attack was detected and automatically mitigated. An attacker attempted to breach our SSH gateway using brute-force methods, briefly gaining elevated access before our automated defense system blocked the attack and isolated affected systems. No data loss occurred. Estimated prevented damage: $45,000-$120,000.",
+          "technical_report": "## Incident Timeline\n\n- **22:14:03 UTC** \u2014 First failed SSH login from 192.168.1.105\n- **22:17:12 UTC** \u2014 47th failed attempt; successful login with user 'jdoe'\n- **22:17:24 UTC** \u2014 Privilege escalation to root via sudo\n- **22:17:25 UTC** \u2014 Anomaly detected by Nova Log Intelligence\n- **22:17:26 UTC** \u2014 IP blocked, user disabled, firewall updated\n\n## Indicators of Compromise\n- Source IP: 192.168.1.105\n- Targeted service: SSH (port 22)\n- Compromised account: jdoe\n\n## Remediation\n- IP permanently blocked\n- Account disabled pending investigation\n- SSH gateway isolated for forensic analysis\n- Firewall rules updated to restrict SSH access\n\n## Prevention Recommendations\n- Implement SSH key-only authentication\n- Deploy fail2ban with stricter thresholds\n- Enable multi-factor authentication for privileged accounts\n- Review sudo policies and implement least-privilege access",
+          "prevention_recommendations": [
+            "Implement SSH key-only authentication",
+            "Deploy fail2ban with stricter thresholds",
+            "Enable multi-factor authentication",
+            "Implement account lockout policies",
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "Nova's multi-agent analysis classified this incident as a brute-force attack with high confidence (92%). The classification was driven by the detection of 47 failed SSH login attempts from a single source IP within a 3-minute window \u2014 a pattern consistent with automated credential-stuffing tools. The anomaly score of 0.87 exceeded the baseline threshold by 3.2 standard deviations. Confidence was further reinforced by similarity to 2 prior incidents in the vector memory store (avg similarity: 0.84), both confirmed brute-force attacks. The immediate privilege escalation to root 12 seconds post-breach elevated the severity from 'high' to 'critical', triggering automated containment via Nova Act.",
+          "metadata": {
+            "generated_at": "2026-02-17T13:23:43.927416+00:00",
+            "incident_id": "e4a56679-0938-4ada-8d38-033f5a358e0b"
+          }
+        },
+        "execution_time_ms": 3.51
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-17T13:23:43.908386+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-17T13:23:43.908386+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:23:43.914537+00:00",
+        "decision": "Found 3 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-17T13:23:43.914537+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:23:43.917563+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:23:43.919587+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:23:43.924039+00:00",
+        "decision": "Confidence 92.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-17T13:23:43.924039+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:23:43.930582+00:00",
+        "decision": "Pipeline completed in 21.55ms"
+      }
+    ]
+  },
+  "05adf12c-993a-4052-987e-1fe8cf0d64ab": {
+    "incident_id": "05adf12c-993a-4052-987e-1fe8cf0d64ab",
+    "status": "completed",
+    "created_at": "2026-02-17T13:24:01.976373+00:00",
+    "updated_at": "2026-02-17T13:24:01.994419+00:00",
+    "raw_input_summary": "3 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.87,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "brute_force",
+              "description": "47 failed SSH login attempts from 192.168.1.105 within 3 minutes",
+              "severity": "high"
+            },
+            {
+              "pattern_type": "privilege_escalation",
+              "description": "User 'jdoe' escalated to root via sudo 12 seconds after first successful login",
+              "severity": "critical"
+            }
+          ],
+          "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalated privileges to root within seconds, indicating automated post-exploitation tooling.",
+          "events_analyzed": 3
+        },
+        "execution_time_ms": 5.58
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "brute_force",
+          "confidence_score": 0.92,
+          "explanation": "The pattern of 47 failed SSH login attempts in rapid succession from a single IP address, followed by a successful login and immediate privilege escalation, is a textbook brute-force attack combined with automated post-exploitation. The timing and volume are consistent with tools like Hydra or Medusa.",
+          "recommended_action": "block_ip",
+          "similar_incidents": [
+            {
+              "incident_id": "e4a56679-0938-4ada-8d38-033f5a358e0b",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "96da9c76-7f12-4c1c-895e-8fe3c3eb903f",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "bc7fb4dd-aef0-46f3-a2a3-214dcb3774bf",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "56544237-6cee-4c28-9aea-9ea1b5ba6927",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            }
+          ]
+        },
+        "execution_time_ms": 1.7
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "ssh-gateway-01",
+            "db-primary-01",
+            "app-server-01",
+            "app-server-02"
+          ],
+          "risk_level": "critical",
+          "estimated_downtime": "2-4 hours",
+          "estimated_financial_impact": "$45,000 - $120,000",
+          "blast_radius": "high",
+          "severity_score": 9.2,
+          "scenario_description": "With root access, the attacker could exfiltrate the primary database, install persistent backdoors across application servers, and pivot to internal network segments. Estimated data at risk: 2.3M customer records."
+        },
+        "execution_time_ms": 1.46
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.92,
+          "threshold": 0.85,
+          "actions_taken": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:24:01.987352+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.02
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:24:01.988352+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:24:01.987352+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.02
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:24:01.988352+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ]
+        },
+        "execution_time_ms": 2.38
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "A coordinated cyber attack was detected and automatically mitigated. An attacker attempted to breach our SSH gateway using brute-force methods, briefly gaining elevated access before our automated defense system blocked the attack and isolated affected systems. No data loss occurred. Estimated prevented damage: $45,000-$120,000.",
+          "technical_report": "## Incident Timeline\n\n- **22:14:03 UTC** \u2014 First failed SSH login from 192.168.1.105\n- **22:17:12 UTC** \u2014 47th failed attempt; successful login with user 'jdoe'\n- **22:17:24 UTC** \u2014 Privilege escalation to root via sudo\n- **22:17:25 UTC** \u2014 Anomaly detected by Nova Log Intelligence\n- **22:17:26 UTC** \u2014 IP blocked, user disabled, firewall updated\n\n## Indicators of Compromise\n- Source IP: 192.168.1.105\n- Targeted service: SSH (port 22)\n- Compromised account: jdoe\n\n## Remediation\n- IP permanently blocked\n- Account disabled pending investigation\n- SSH gateway isolated for forensic analysis\n- Firewall rules updated to restrict SSH access\n\n## Prevention Recommendations\n- Implement SSH key-only authentication\n- Deploy fail2ban with stricter thresholds\n- Enable multi-factor authentication for privileged accounts\n- Review sudo policies and implement least-privilege access",
+          "prevention_recommendations": [
+            "Implement SSH key-only authentication",
+            "Deploy fail2ban with stricter thresholds",
+            "Enable multi-factor authentication",
+            "Implement account lockout policies",
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "Nova's multi-agent analysis classified this incident as a brute-force attack with high confidence (92%). The classification was driven by the detection of 47 failed SSH login attempts from a single source IP within a 3-minute window \u2014 a pattern consistent with automated credential-stuffing tools. The anomaly score of 0.87 exceeded the baseline threshold by 3.2 standard deviations. Confidence was further reinforced by similarity to 2 prior incidents in the vector memory store (avg similarity: 0.84), both confirmed brute-force attacks. The immediate privilege escalation to root 12 seconds post-breach elevated the severity from 'high' to 'critical', triggering automated containment via Nova Act.",
+          "metadata": {
+            "generated_at": "2026-02-17T13:24:01.991603+00:00",
+            "incident_id": "05adf12c-993a-4052-987e-1fe8cf0d64ab"
+          }
+        },
+        "execution_time_ms": 2.74
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-17T13:24:01.976373+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-17T13:24:01.976373+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:24:01.982610+00:00",
+        "decision": "Found 4 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-17T13:24:01.982610+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:24:01.984839+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:24:01.986345+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:24:01.988352+00:00",
+        "decision": "Confidence 92.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-17T13:24:01.988352+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:24:01.994419+00:00",
+        "decision": "Pipeline completed in 18.29ms"
+      }
+    ]
+  },
+  "8dc545ff-6e15-4a21-8cc8-b589844730e2": {
+    "incident_id": "8dc545ff-6e15-4a21-8cc8-b589844730e2",
+    "status": "completed",
+    "created_at": "2026-02-17T13:47:35.461682+00:00",
+    "updated_at": "2026-02-17T13:47:35.484593+00:00",
+    "raw_input_summary": "3 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.87,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "brute_force",
+              "description": "47 failed SSH login attempts from 192.168.1.105 within 3 minutes",
+              "severity": "high"
+            },
+            {
+              "pattern_type": "privilege_escalation",
+              "description": "User 'jdoe' escalated to root via sudo 12 seconds after first successful login",
+              "severity": "critical"
+            }
+          ],
+          "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalated privileges to root within seconds, indicating automated post-exploitation tooling.",
+          "events_analyzed": 3
+        },
+        "execution_time_ms": 6.57
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "brute_force",
+          "confidence_score": 0.92,
+          "explanation": "The pattern of 47 failed SSH login attempts in rapid succession from a single IP address, followed by a successful login and immediate privilege escalation, is a textbook brute-force attack combined with automated post-exploitation. The timing and volume are consistent with tools like Hydra or Medusa.",
+          "recommended_action": "block_ip",
+          "similar_incidents": [
+            {
+              "incident_id": "05adf12c-993a-4052-987e-1fe8cf0d64ab",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "e4a56679-0938-4ada-8d38-033f5a358e0b",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "96da9c76-7f12-4c1c-895e-8fe3c3eb903f",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "bc7fb4dd-aef0-46f3-a2a3-214dcb3774bf",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "56544237-6cee-4c28-9aea-9ea1b5ba6927",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            }
+          ]
+        },
+        "execution_time_ms": 1.82
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "ssh-gateway-01",
+            "db-primary-01",
+            "app-server-01",
+            "app-server-02"
+          ],
+          "risk_level": "critical",
+          "estimated_downtime": "2-4 hours",
+          "estimated_financial_impact": "$45,000 - $120,000",
+          "blast_radius": "high",
+          "severity_score": 9.2,
+          "scenario_description": "With root access, the attacker could exfiltrate the primary database, install persistent backdoors across application servers, and pivot to internal network segments. Estimated data at risk: 2.3M customer records."
+        },
+        "execution_time_ms": 1.59
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.92,
+          "threshold": 0.85,
+          "actions_taken": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:47:35.473919+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.03
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:47:35.475426+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:47:35.473919+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.03
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:47:35.475426+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ]
+        },
+        "execution_time_ms": 2.82
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "A coordinated cyber attack was detected and automatically mitigated. An attacker attempted to breach our SSH gateway using brute-force methods, briefly gaining elevated access before our automated defense system blocked the attack and isolated affected systems. No data loss occurred. Estimated prevented damage: $45,000-$120,000.",
+          "technical_report": "## Incident Timeline\n\n- **22:14:03 UTC** \u2014 First failed SSH login from 192.168.1.105\n- **22:17:12 UTC** \u2014 47th failed attempt; successful login with user 'jdoe'\n- **22:17:24 UTC** \u2014 Privilege escalation to root via sudo\n- **22:17:25 UTC** \u2014 Anomaly detected by Nova Log Intelligence\n- **22:17:26 UTC** \u2014 IP blocked, user disabled, firewall updated\n\n## Indicators of Compromise\n- Source IP: 192.168.1.105\n- Targeted service: SSH (port 22)\n- Compromised account: jdoe\n\n## Remediation\n- IP permanently blocked\n- Account disabled pending investigation\n- SSH gateway isolated for forensic analysis\n- Firewall rules updated to restrict SSH access\n\n## Prevention Recommendations\n- Implement SSH key-only authentication\n- Deploy fail2ban with stricter thresholds\n- Enable multi-factor authentication for privileged accounts\n- Review sudo policies and implement least-privilege access",
+          "prevention_recommendations": [
+            "Implement SSH key-only authentication",
+            "Deploy fail2ban with stricter thresholds",
+            "Enable multi-factor authentication",
+            "Implement account lockout policies",
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "Nova's multi-agent analysis classified this incident as a brute-force attack with high confidence (92%). The classification was driven by the detection of 47 failed SSH login attempts from a single source IP within a 3-minute window \u2014 a pattern consistent with automated credential-stuffing tools. The anomaly score of 0.87 exceeded the baseline threshold by 3.2 standard deviations. Confidence was further reinforced by similarity to 2 prior incidents in the vector memory store (avg similarity: 0.84), both confirmed brute-force attacks. The immediate privilege escalation to root 12 seconds post-breach elevated the severity from 'high' to 'critical', triggering automated containment via Nova Act.",
+          "metadata": {
+            "generated_at": "2026-02-17T13:47:35.479594+00:00",
+            "incident_id": "8dc545ff-6e15-4a21-8cc8-b589844730e2"
+          }
+        },
+        "execution_time_ms": 3.4
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-17T13:47:35.461682+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-17T13:47:35.461682+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:47:35.469920+00:00",
+        "decision": "Found 5 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-17T13:47:35.469920+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:47:35.471958+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:47:35.472919+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:47:35.476491+00:00",
+        "decision": "Confidence 92.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-17T13:47:35.476491+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:47:35.484593+00:00",
+        "decision": "Pipeline completed in 22.49ms"
+      }
+    ]
+  },
+  "c5258760-0f3c-47a7-9a84-cee0a7ce19a8": {
+    "incident_id": "c5258760-0f3c-47a7-9a84-cee0a7ce19a8",
+    "status": "completed",
+    "created_at": "2026-02-17T13:48:30.898765+00:00",
+    "updated_at": "2026-02-17T13:48:30.919143+00:00",
+    "raw_input_summary": "3 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.87,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "brute_force",
+              "description": "47 failed SSH login attempts from 192.168.1.105 within 3 minutes",
+              "severity": "high"
+            },
+            {
+              "pattern_type": "privilege_escalation",
+              "description": "User 'jdoe' escalated to root via sudo 12 seconds after first successful login",
+              "severity": "critical"
+            }
+          ],
+          "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalated privileges to root within seconds, indicating automated post-exploitation tooling.",
+          "events_analyzed": 3
+        },
+        "execution_time_ms": 5.33
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "brute_force",
+          "confidence_score": 0.92,
+          "explanation": "The pattern of 47 failed SSH login attempts in rapid succession from a single IP address, followed by a successful login and immediate privilege escalation, is a textbook brute-force attack combined with automated post-exploitation. The timing and volume are consistent with tools like Hydra or Medusa.",
+          "recommended_action": "block_ip",
+          "similar_incidents": [
+            {
+              "incident_id": "8dc545ff-6e15-4a21-8cc8-b589844730e2",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "05adf12c-993a-4052-987e-1fe8cf0d64ab",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "e4a56679-0938-4ada-8d38-033f5a358e0b",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "96da9c76-7f12-4c1c-895e-8fe3c3eb903f",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "bc7fb4dd-aef0-46f3-a2a3-214dcb3774bf",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            }
+          ]
+        },
+        "execution_time_ms": 1.59
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "ssh-gateway-01",
+            "db-primary-01",
+            "app-server-01",
+            "app-server-02"
+          ],
+          "risk_level": "critical",
+          "estimated_downtime": "2-4 hours",
+          "estimated_financial_impact": "$45,000 - $120,000",
+          "blast_radius": "high",
+          "severity_score": 9.2,
+          "scenario_description": "With root access, the attacker could exfiltrate the primary database, install persistent backdoors across application servers, and pivot to internal network segments. Estimated data at risk: 2.3M customer records."
+        },
+        "execution_time_ms": 2.06
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.92,
+          "threshold": 0.85,
+          "actions_taken": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:48:30.910788+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.02
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:48:30.912402+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:48:30.910788+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.02
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:48:30.912402+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ]
+        },
+        "execution_time_ms": 2.94
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "A coordinated cyber attack was detected and automatically mitigated. An attacker attempted to breach our SSH gateway using brute-force methods, briefly gaining elevated access before our automated defense system blocked the attack and isolated affected systems. No data loss occurred. Estimated prevented damage: $45,000-$120,000.",
+          "technical_report": "## Incident Timeline\n\n- **22:14:03 UTC** \u2014 First failed SSH login from 192.168.1.105\n- **22:17:12 UTC** \u2014 47th failed attempt; successful login with user 'jdoe'\n- **22:17:24 UTC** \u2014 Privilege escalation to root via sudo\n- **22:17:25 UTC** \u2014 Anomaly detected by Nova Log Intelligence\n- **22:17:26 UTC** \u2014 IP blocked, user disabled, firewall updated\n\n## Indicators of Compromise\n- Source IP: 192.168.1.105\n- Targeted service: SSH (port 22)\n- Compromised account: jdoe\n\n## Remediation\n- IP permanently blocked\n- Account disabled pending investigation\n- SSH gateway isolated for forensic analysis\n- Firewall rules updated to restrict SSH access\n\n## Prevention Recommendations\n- Implement SSH key-only authentication\n- Deploy fail2ban with stricter thresholds\n- Enable multi-factor authentication for privileged accounts\n- Review sudo policies and implement least-privilege access",
+          "prevention_recommendations": [
+            "Implement SSH key-only authentication",
+            "Deploy fail2ban with stricter thresholds",
+            "Enable multi-factor authentication",
+            "Implement account lockout policies",
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "Nova's multi-agent analysis classified this incident as a brute-force attack with high confidence (92%). The classification was driven by the detection of 47 failed SSH login attempts from a single source IP within a 3-minute window \u2014 a pattern consistent with automated credential-stuffing tools. The anomaly score of 0.87 exceeded the baseline threshold by 3.2 standard deviations. Confidence was further reinforced by similarity to 2 prior incidents in the vector memory store (avg similarity: 0.84), both confirmed brute-force attacks. The immediate privilege escalation to root 12 seconds post-breach elevated the severity from 'high' to 'critical', triggering automated containment via Nova Act.",
+          "metadata": {
+            "generated_at": "2026-02-17T13:48:30.915405+00:00",
+            "incident_id": "c5258760-0f3c-47a7-9a84-cee0a7ce19a8"
+          }
+        },
+        "execution_time_ms": 3.18
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-17T13:48:30.898765+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-17T13:48:30.898765+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:48:30.905789+00:00",
+        "decision": "Found 5 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-17T13:48:30.905789+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:48:30.907518+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:48:30.909971+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:48:30.912402+00:00",
+        "decision": "Confidence 92.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-17T13:48:30.912402+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:48:30.919143+00:00",
+        "decision": "Pipeline completed in 20.4ms"
+      }
+    ]
+  },
+  "e141c9f5-caec-4b2f-8cc5-cf326a026c03": {
+    "incident_id": "e141c9f5-caec-4b2f-8cc5-cf326a026c03",
+    "status": "completed",
+    "created_at": "2026-02-17T13:49:04.058595+00:00",
+    "updated_at": "2026-02-17T13:49:04.078375+00:00",
+    "raw_input_summary": "3 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.87,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "brute_force",
+              "description": "47 failed SSH login attempts from 192.168.1.105 within 3 minutes",
+              "severity": "high"
+            },
+            {
+              "pattern_type": "privilege_escalation",
+              "description": "User 'jdoe' escalated to root via sudo 12 seconds after first successful login",
+              "severity": "critical"
+            }
+          ],
+          "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalated privileges to root within seconds, indicating automated post-exploitation tooling.",
+          "events_analyzed": 3
+        },
+        "execution_time_ms": 5.05
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "brute_force",
+          "confidence_score": 0.92,
+          "explanation": "The pattern of 47 failed SSH login attempts in rapid succession from a single IP address, followed by a successful login and immediate privilege escalation, is a textbook brute-force attack combined with automated post-exploitation. The timing and volume are consistent with tools like Hydra or Medusa.",
+          "recommended_action": "block_ip",
+          "similar_incidents": [
+            {
+              "incident_id": "8dc545ff-6e15-4a21-8cc8-b589844730e2",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "05adf12c-993a-4052-987e-1fe8cf0d64ab",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "c5258760-0f3c-47a7-9a84-cee0a7ce19a8",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "e4a56679-0938-4ada-8d38-033f5a358e0b",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "96da9c76-7f12-4c1c-895e-8fe3c3eb903f",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            }
+          ]
+        },
+        "execution_time_ms": 1.73
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "ssh-gateway-01",
+            "db-primary-01",
+            "app-server-01",
+            "app-server-02"
+          ],
+          "risk_level": "critical",
+          "estimated_downtime": "2-4 hours",
+          "estimated_financial_impact": "$45,000 - $120,000",
+          "blast_radius": "high",
+          "severity_score": 9.2,
+          "scenario_description": "With root access, the attacker could exfiltrate the primary database, install persistent backdoors across application servers, and pivot to internal network segments. Estimated data at risk: 2.3M customer records."
+        },
+        "execution_time_ms": 1.83
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.92,
+          "threshold": 0.85,
+          "actions_taken": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:49:04.069758+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.02
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:49:04.070759+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.05
+            }
+          ],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:49:04.069758+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.02
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:49:04.070759+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.05
+            }
+          ]
+        },
+        "execution_time_ms": 2.92
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "A coordinated cyber attack was detected and automatically mitigated. An attacker attempted to breach our SSH gateway using brute-force methods, briefly gaining elevated access before our automated defense system blocked the attack and isolated affected systems. No data loss occurred. Estimated prevented damage: $45,000-$120,000.",
+          "technical_report": "## Incident Timeline\n\n- **22:14:03 UTC** \u2014 First failed SSH login from 192.168.1.105\n- **22:17:12 UTC** \u2014 47th failed attempt; successful login with user 'jdoe'\n- **22:17:24 UTC** \u2014 Privilege escalation to root via sudo\n- **22:17:25 UTC** \u2014 Anomaly detected by Nova Log Intelligence\n- **22:17:26 UTC** \u2014 IP blocked, user disabled, firewall updated\n\n## Indicators of Compromise\n- Source IP: 192.168.1.105\n- Targeted service: SSH (port 22)\n- Compromised account: jdoe\n\n## Remediation\n- IP permanently blocked\n- Account disabled pending investigation\n- SSH gateway isolated for forensic analysis\n- Firewall rules updated to restrict SSH access\n\n## Prevention Recommendations\n- Implement SSH key-only authentication\n- Deploy fail2ban with stricter thresholds\n- Enable multi-factor authentication for privileged accounts\n- Review sudo policies and implement least-privilege access",
+          "prevention_recommendations": [
+            "Implement SSH key-only authentication",
+            "Deploy fail2ban with stricter thresholds",
+            "Enable multi-factor authentication",
+            "Implement account lockout policies",
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "Nova's multi-agent analysis classified this incident as a brute-force attack with high confidence (92%). The classification was driven by the detection of 47 failed SSH login attempts from a single source IP within a 3-minute window \u2014 a pattern consistent with automated credential-stuffing tools. The anomaly score of 0.87 exceeded the baseline threshold by 3.2 standard deviations. Confidence was further reinforced by similarity to 2 prior incidents in the vector memory store (avg similarity: 0.84), both confirmed brute-force attacks. The immediate privilege escalation to root 12 seconds post-breach elevated the severity from 'high' to 'critical', triggering automated containment via Nova Act.",
+          "metadata": {
+            "generated_at": "2026-02-17T13:49:04.073822+00:00",
+            "incident_id": "e141c9f5-caec-4b2f-8cc5-cf326a026c03"
+          }
+        },
+        "execution_time_ms": 2.85
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-17T13:49:04.058595+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-17T13:49:04.058595+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:49:04.064672+00:00",
+        "decision": "Found 5 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-17T13:49:04.064672+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:49:04.066838+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:49:04.068749+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:49:04.071758+00:00",
+        "decision": "Confidence 92.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-17T13:49:04.071758+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:49:04.078375+00:00",
+        "decision": "Pipeline completed in 20.12ms"
+      }
+    ]
+  },
+  "6190ab52-975f-44aa-a539-b5476ca5f756": {
+    "incident_id": "6190ab52-975f-44aa-a539-b5476ca5f756",
+    "status": "completed",
+    "created_at": "2026-02-17T13:49:25.846374+00:00",
+    "updated_at": "2026-02-17T13:49:25.870377+00:00",
+    "raw_input_summary": "3 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.87,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "brute_force",
+              "description": "47 failed SSH login attempts from 192.168.1.105 within 3 minutes",
+              "severity": "high"
+            },
+            {
+              "pattern_type": "privilege_escalation",
+              "description": "User 'jdoe' escalated to root via sudo 12 seconds after first successful login",
+              "severity": "critical"
+            }
+          ],
+          "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalated privileges to root within seconds, indicating automated post-exploitation tooling.",
+          "events_analyzed": 3
+        },
+        "execution_time_ms": 5.42
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "brute_force",
+          "confidence_score": 0.92,
+          "explanation": "The pattern of 47 failed SSH login attempts in rapid succession from a single IP address, followed by a successful login and immediate privilege escalation, is a textbook brute-force attack combined with automated post-exploitation. The timing and volume are consistent with tools like Hydra or Medusa.",
+          "recommended_action": "block_ip",
+          "similar_incidents": [
+            {
+              "incident_id": "e141c9f5-caec-4b2f-8cc5-cf326a026c03",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "c5258760-0f3c-47a7-9a84-cee0a7ce19a8",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "8dc545ff-6e15-4a21-8cc8-b589844730e2",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "05adf12c-993a-4052-987e-1fe8cf0d64ab",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "e4a56679-0938-4ada-8d38-033f5a358e0b",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            }
+          ]
+        },
+        "execution_time_ms": 1.65
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "ssh-gateway-01",
+            "db-primary-01",
+            "app-server-01",
+            "app-server-02"
+          ],
+          "risk_level": "critical",
+          "estimated_downtime": "2-4 hours",
+          "estimated_financial_impact": "$45,000 - $120,000",
+          "blast_radius": "high",
+          "severity_score": 9.2,
+          "scenario_description": "With root access, the attacker could exfiltrate the primary database, install persistent backdoors across application servers, and pivot to internal network segments. Estimated data at risk: 2.3M customer records."
+        },
+        "execution_time_ms": 2.27
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.92,
+          "threshold": 0.85,
+          "actions_taken": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:49:25.858687+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.06
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:49:25.860215+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:49:25.858687+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.06
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:49:25.860215+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ]
+        },
+        "execution_time_ms": 3.68
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "A coordinated cyber attack was detected and automatically mitigated. An attacker attempted to breach our SSH gateway using brute-force methods, briefly gaining elevated access before our automated defense system blocked the attack and isolated affected systems. No data loss occurred. Estimated prevented damage: $45,000-$120,000.",
+          "technical_report": "## Incident Timeline\n\n- **22:14:03 UTC** \u2014 First failed SSH login from 192.168.1.105\n- **22:17:12 UTC** \u2014 47th failed attempt; successful login with user 'jdoe'\n- **22:17:24 UTC** \u2014 Privilege escalation to root via sudo\n- **22:17:25 UTC** \u2014 Anomaly detected by Nova Log Intelligence\n- **22:17:26 UTC** \u2014 IP blocked, user disabled, firewall updated\n\n## Indicators of Compromise\n- Source IP: 192.168.1.105\n- Targeted service: SSH (port 22)\n- Compromised account: jdoe\n\n## Remediation\n- IP permanently blocked\n- Account disabled pending investigation\n- SSH gateway isolated for forensic analysis\n- Firewall rules updated to restrict SSH access\n\n## Prevention Recommendations\n- Implement SSH key-only authentication\n- Deploy fail2ban with stricter thresholds\n- Enable multi-factor authentication for privileged accounts\n- Review sudo policies and implement least-privilege access",
+          "prevention_recommendations": [
+            "Implement SSH key-only authentication",
+            "Deploy fail2ban with stricter thresholds",
+            "Enable multi-factor authentication",
+            "Implement account lockout policies",
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "Nova's multi-agent analysis classified this incident as a brute-force attack with high confidence (92%). The classification was driven by the detection of 47 failed SSH login attempts from a single source IP within a 3-minute window \u2014 a pattern consistent with automated credential-stuffing tools. The anomaly score of 0.87 exceeded the baseline threshold by 3.2 standard deviations. Confidence was further reinforced by similarity to 2 prior incidents in the vector memory store (avg similarity: 0.84), both confirmed brute-force attacks. The immediate privilege escalation to root 12 seconds post-breach elevated the severity from 'high' to 'critical', triggering automated containment via Nova Act.",
+          "metadata": {
+            "generated_at": "2026-02-17T13:49:25.864341+00:00",
+            "incident_id": "6190ab52-975f-44aa-a539-b5476ca5f756"
+          }
+        },
+        "execution_time_ms": 3.55
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-17T13:49:25.846374+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-17T13:49:25.846374+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:49:25.852472+00:00",
+        "decision": "Found 5 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-17T13:49:25.852472+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:49:25.853981+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:49:25.857688+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:49:25.860215+00:00",
+        "decision": "Confidence 92.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-17T13:49:25.860215+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:49:25.870377+00:00",
+        "decision": "Pipeline completed in 23.44ms"
+      }
+    ]
+  },
+  "7154fe1d-6838-4ece-8b97-14abaac6b7d6": {
+    "incident_id": "7154fe1d-6838-4ece-8b97-14abaac6b7d6",
+    "status": "completed",
+    "created_at": "2026-02-17T13:52:54.624296+00:00",
+    "updated_at": "2026-02-17T13:52:54.646383+00:00",
+    "raw_input_summary": "3 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.87,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "brute_force",
+              "description": "47 failed SSH login attempts from 192.168.1.105 within 3 minutes",
+              "severity": "high"
+            },
+            {
+              "pattern_type": "privilege_escalation",
+              "description": "User 'jdoe' escalated to root via sudo 12 seconds after first successful login",
+              "severity": "critical"
+            }
+          ],
+          "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalated privileges to root within seconds, indicating automated post-exploitation tooling.",
+          "events_analyzed": 3
+        },
+        "execution_time_ms": 6.19
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "brute_force",
+          "confidence_score": 0.92,
+          "explanation": "The pattern of 47 failed SSH login attempts in rapid succession from a single IP address, followed by a successful login and immediate privilege escalation, is a textbook brute-force attack combined with automated post-exploitation. The timing and volume are consistent with tools like Hydra or Medusa.",
+          "recommended_action": "block_ip",
+          "similar_incidents": [
+            {
+              "incident_id": "6190ab52-975f-44aa-a539-b5476ca5f756",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "e141c9f5-caec-4b2f-8cc5-cf326a026c03",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "c5258760-0f3c-47a7-9a84-cee0a7ce19a8",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "8dc545ff-6e15-4a21-8cc8-b589844730e2",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "05adf12c-993a-4052-987e-1fe8cf0d64ab",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            }
+          ]
+        },
+        "execution_time_ms": 2.1
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "ssh-gateway-01",
+            "db-primary-01",
+            "app-server-01",
+            "app-server-02"
+          ],
+          "risk_level": "critical",
+          "estimated_downtime": "2-4 hours",
+          "estimated_financial_impact": "$45,000 - $120,000",
+          "blast_radius": "high",
+          "severity_score": 9.2,
+          "scenario_description": "With root access, the attacker could exfiltrate the primary database, install persistent backdoors across application servers, and pivot to internal network segments. Estimated data at risk: 2.3M customer records."
+        },
+        "execution_time_ms": 1.7
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.92,
+          "threshold": 0.85,
+          "actions_taken": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:52:54.637300+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.02
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:52:54.638309+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:52:54.637300+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.02
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:52:54.638309+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ]
+        },
+        "execution_time_ms": 3.45
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "A coordinated cyber attack was detected and automatically mitigated. An attacker attempted to breach our SSH gateway using brute-force methods, briefly gaining elevated access before our automated defense system blocked the attack and isolated affected systems. No data loss occurred. Estimated prevented damage: $45,000-$120,000.",
+          "technical_report": "## Incident Timeline\n\n- **22:14:03 UTC** \u2014 First failed SSH login from 192.168.1.105\n- **22:17:12 UTC** \u2014 47th failed attempt; successful login with user 'jdoe'\n- **22:17:24 UTC** \u2014 Privilege escalation to root via sudo\n- **22:17:25 UTC** \u2014 Anomaly detected by Nova Log Intelligence\n- **22:17:26 UTC** \u2014 IP blocked, user disabled, firewall updated\n\n## Indicators of Compromise\n- Source IP: 192.168.1.105\n- Targeted service: SSH (port 22)\n- Compromised account: jdoe\n\n## Remediation\n- IP permanently blocked\n- Account disabled pending investigation\n- SSH gateway isolated for forensic analysis\n- Firewall rules updated to restrict SSH access\n\n## Prevention Recommendations\n- Implement SSH key-only authentication\n- Deploy fail2ban with stricter thresholds\n- Enable multi-factor authentication for privileged accounts\n- Review sudo policies and implement least-privilege access",
+          "prevention_recommendations": [
+            "Implement SSH key-only authentication",
+            "Deploy fail2ban with stricter thresholds",
+            "Enable multi-factor authentication",
+            "Implement account lockout policies",
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "Nova's multi-agent analysis classified this incident as a brute-force attack with high confidence (92%). The classification was driven by the detection of 47 failed SSH login attempts from a single source IP within a 3-minute window \u2014 a pattern consistent with automated credential-stuffing tools. The anomaly score of 0.87 exceeded the baseline threshold by 3.2 standard deviations. Confidence was further reinforced by similarity to 2 prior incidents in the vector memory store (avg similarity: 0.84), both confirmed brute-force attacks. The immediate privilege escalation to root 12 seconds post-breach elevated the severity from 'high' to 'critical', triggering automated containment via Nova Act.",
+          "metadata": {
+            "generated_at": "2026-02-17T13:52:54.642310+00:00",
+            "incident_id": "7154fe1d-6838-4ece-8b97-14abaac6b7d6"
+          }
+        },
+        "execution_time_ms": 3.15
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-17T13:52:54.624296+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-17T13:52:54.624296+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:52:54.631713+00:00",
+        "decision": "Found 5 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-17T13:52:54.631713+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:52:54.633720+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:52:54.635726+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:52:54.639308+00:00",
+        "decision": "Confidence 92.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-17T13:52:54.639308+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:52:54.646383+00:00",
+        "decision": "Pipeline completed in 22.33ms"
+      }
+    ]
+  },
+  "2b114033-ebf3-44b6-b0a3-0593566b12b2": {
+    "incident_id": "2b114033-ebf3-44b6-b0a3-0593566b12b2",
+    "status": "completed",
+    "created_at": "2026-02-17T13:54:06.508446+00:00",
+    "updated_at": "2026-02-17T13:54:06.530467+00:00",
+    "raw_input_summary": "3 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.87,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "brute_force",
+              "description": "47 failed SSH login attempts from 192.168.1.105 within 3 minutes",
+              "severity": "high"
+            },
+            {
+              "pattern_type": "privilege_escalation",
+              "description": "User 'jdoe' escalated to root via sudo 12 seconds after first successful login",
+              "severity": "critical"
+            }
+          ],
+          "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalated privileges to root within seconds, indicating automated post-exploitation tooling.",
+          "events_analyzed": 3
+        },
+        "execution_time_ms": 5.57
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "brute_force",
+          "confidence_score": 0.92,
+          "explanation": "The pattern of 47 failed SSH login attempts in rapid succession from a single IP address, followed by a successful login and immediate privilege escalation, is a textbook brute-force attack combined with automated post-exploitation. The timing and volume are consistent with tools like Hydra or Medusa.",
+          "recommended_action": "block_ip",
+          "similar_incidents": [
+            {
+              "incident_id": "7154fe1d-6838-4ece-8b97-14abaac6b7d6",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "6190ab52-975f-44aa-a539-b5476ca5f756",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "e141c9f5-caec-4b2f-8cc5-cf326a026c03",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "c5258760-0f3c-47a7-9a84-cee0a7ce19a8",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "8dc545ff-6e15-4a21-8cc8-b589844730e2",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            }
+          ]
+        },
+        "execution_time_ms": 1.96
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "ssh-gateway-01",
+            "db-primary-01",
+            "app-server-01",
+            "app-server-02"
+          ],
+          "risk_level": "critical",
+          "estimated_downtime": "2-4 hours",
+          "estimated_financial_impact": "$45,000 - $120,000",
+          "blast_radius": "high",
+          "severity_score": 9.2,
+          "scenario_description": "With root access, the attacker could exfiltrate the primary database, install persistent backdoors across application servers, and pivot to internal network segments. Estimated data at risk: 2.3M customer records."
+        },
+        "execution_time_ms": 1.67
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.92,
+          "threshold": 0.85,
+          "actions_taken": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:54:06.521241+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.02
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:54:06.523221+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:54:06.521241+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.02
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:54:06.523221+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ]
+        },
+        "execution_time_ms": 3.39
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "A coordinated cyber attack was detected and automatically mitigated. An attacker attempted to breach our SSH gateway using brute-force methods, briefly gaining elevated access before our automated defense system blocked the attack and isolated affected systems. No data loss occurred. Estimated prevented damage: $45,000-$120,000.",
+          "technical_report": "## Incident Timeline\n\n- **22:14:03 UTC** \u2014 First failed SSH login from 192.168.1.105\n- **22:17:12 UTC** \u2014 47th failed attempt; successful login with user 'jdoe'\n- **22:17:24 UTC** \u2014 Privilege escalation to root via sudo\n- **22:17:25 UTC** \u2014 Anomaly detected by Nova Log Intelligence\n- **22:17:26 UTC** \u2014 IP blocked, user disabled, firewall updated\n\n## Indicators of Compromise\n- Source IP: 192.168.1.105\n- Targeted service: SSH (port 22)\n- Compromised account: jdoe\n\n## Remediation\n- IP permanently blocked\n- Account disabled pending investigation\n- SSH gateway isolated for forensic analysis\n- Firewall rules updated to restrict SSH access\n\n## Prevention Recommendations\n- Implement SSH key-only authentication\n- Deploy fail2ban with stricter thresholds\n- Enable multi-factor authentication for privileged accounts\n- Review sudo policies and implement least-privilege access",
+          "prevention_recommendations": [
+            "Implement SSH key-only authentication",
+            "Deploy fail2ban with stricter thresholds",
+            "Enable multi-factor authentication",
+            "Implement account lockout policies",
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "Nova's multi-agent analysis classified this incident as a brute-force attack with high confidence (92%). The classification was driven by the detection of 47 failed SSH login attempts from a single source IP within a 3-minute window \u2014 a pattern consistent with automated credential-stuffing tools. The anomaly score of 0.87 exceeded the baseline threshold by 3.2 standard deviations. Confidence was further reinforced by similarity to 2 prior incidents in the vector memory store (avg similarity: 0.84), both confirmed brute-force attacks. The immediate privilege escalation to root 12 seconds post-breach elevated the severity from 'high' to 'critical', triggering automated containment via Nova Act.",
+          "metadata": {
+            "generated_at": "2026-02-17T13:54:06.526949+00:00",
+            "incident_id": "2b114033-ebf3-44b6-b0a3-0593566b12b2"
+          }
+        },
+        "execution_time_ms": 3.34
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-17T13:54:06.508446+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-17T13:54:06.508446+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:54:06.515692+00:00",
+        "decision": "Found 5 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-17T13:54:06.515692+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:54:06.518211+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:54:06.520205+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:54:06.523221+00:00",
+        "decision": "Confidence 92.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-17T13:54:06.523221+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:54:06.530467+00:00",
+        "decision": "Pipeline completed in 21.76ms"
+      }
+    ]
+  },
+  "db069caa-4764-4499-885c-6c51bc9eee9c": {
+    "incident_id": "db069caa-4764-4499-885c-6c51bc9eee9c",
+    "status": "completed",
+    "created_at": "2026-02-17T13:55:49.212622+00:00",
+    "updated_at": "2026-02-17T13:55:49.234348+00:00",
+    "raw_input_summary": "3 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.87,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "brute_force",
+              "description": "47 failed SSH login attempts from 192.168.1.105 within 3 minutes",
+              "severity": "high"
+            },
+            {
+              "pattern_type": "privilege_escalation",
+              "description": "User 'jdoe' escalated to root via sudo 12 seconds after first successful login",
+              "severity": "critical"
+            }
+          ],
+          "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalated privileges to root within seconds, indicating automated post-exploitation tooling.",
+          "events_analyzed": 3
+        },
+        "execution_time_ms": 5.25
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "brute_force",
+          "confidence_score": 0.92,
+          "explanation": "The pattern of 47 failed SSH login attempts in rapid succession from a single IP address, followed by a successful login and immediate privilege escalation, is a textbook brute-force attack combined with automated post-exploitation. The timing and volume are consistent with tools like Hydra or Medusa.",
+          "recommended_action": "block_ip",
+          "similar_incidents": [
+            {
+              "incident_id": "7154fe1d-6838-4ece-8b97-14abaac6b7d6",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "6190ab52-975f-44aa-a539-b5476ca5f756",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "2b114033-ebf3-44b6-b0a3-0593566b12b2",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "e141c9f5-caec-4b2f-8cc5-cf326a026c03",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "c5258760-0f3c-47a7-9a84-cee0a7ce19a8",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            }
+          ]
+        },
+        "execution_time_ms": 1.99
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "ssh-gateway-01",
+            "db-primary-01",
+            "app-server-01",
+            "app-server-02"
+          ],
+          "risk_level": "critical",
+          "estimated_downtime": "2-4 hours",
+          "estimated_financial_impact": "$45,000 - $120,000",
+          "blast_radius": "high",
+          "severity_score": 9.2,
+          "scenario_description": "With root access, the attacker could exfiltrate the primary database, install persistent backdoors across application servers, and pivot to internal network segments. Estimated data at risk: 2.3M customer records."
+        },
+        "execution_time_ms": 1.37
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.92,
+          "threshold": 0.85,
+          "actions_taken": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:55:49.223642+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.02
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:55:49.225152+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:55:49.223642+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.02
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:55:49.225152+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ]
+        },
+        "execution_time_ms": 3.03
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "A coordinated cyber attack was detected and automatically mitigated. An attacker attempted to breach our SSH gateway using brute-force methods, briefly gaining elevated access before our automated defense system blocked the attack and isolated affected systems. No data loss occurred. Estimated prevented damage: $45,000-$120,000.",
+          "technical_report": "## Incident Timeline\n\n- **22:14:03 UTC** \u2014 First failed SSH login from 192.168.1.105\n- **22:17:12 UTC** \u2014 47th failed attempt; successful login with user 'jdoe'\n- **22:17:24 UTC** \u2014 Privilege escalation to root via sudo\n- **22:17:25 UTC** \u2014 Anomaly detected by Nova Log Intelligence\n- **22:17:26 UTC** \u2014 IP blocked, user disabled, firewall updated\n\n## Indicators of Compromise\n- Source IP: 192.168.1.105\n- Targeted service: SSH (port 22)\n- Compromised account: jdoe\n\n## Remediation\n- IP permanently blocked\n- Account disabled pending investigation\n- SSH gateway isolated for forensic analysis\n- Firewall rules updated to restrict SSH access\n\n## Prevention Recommendations\n- Implement SSH key-only authentication\n- Deploy fail2ban with stricter thresholds\n- Enable multi-factor authentication for privileged accounts\n- Review sudo policies and implement least-privilege access",
+          "prevention_recommendations": [
+            "Implement SSH key-only authentication",
+            "Deploy fail2ban with stricter thresholds",
+            "Enable multi-factor authentication",
+            "Implement account lockout policies",
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "Nova's multi-agent analysis classified this incident as a brute-force attack with high confidence (92%). The classification was driven by the detection of 47 failed SSH login attempts from a single source IP within a 3-minute window \u2014 a pattern consistent with automated credential-stuffing tools. The anomaly score of 0.87 exceeded the baseline threshold by 3.2 standard deviations. Confidence was further reinforced by similarity to 2 prior incidents in the vector memory store (avg similarity: 0.84), both confirmed brute-force attacks. The immediate privilege escalation to root 12 seconds post-breach elevated the severity from 'high' to 'critical', triggering automated containment via Nova Act.",
+          "metadata": {
+            "generated_at": "2026-02-17T13:55:49.228855+00:00",
+            "incident_id": "db069caa-4764-4499-885c-6c51bc9eee9c"
+          }
+        },
+        "execution_time_ms": 2.8
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-17T13:55:49.212622+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-17T13:55:49.212622+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:55:49.219713+00:00",
+        "decision": "Found 5 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-17T13:55:49.219713+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:55:49.221615+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:55:49.222644+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:55:49.226166+00:00",
+        "decision": "Confidence 92.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-17T13:55:49.226166+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:55:49.234348+00:00",
+        "decision": "Pipeline completed in 22.3ms"
+      }
+    ]
+  },
+  "c24ea581-ceed-45c7-a35f-92f61b29bee2": {
+    "incident_id": "c24ea581-ceed-45c7-a35f-92f61b29bee2",
+    "status": "completed",
+    "created_at": "2026-02-17T13:59:44.182509+00:00",
+    "updated_at": "2026-02-17T13:59:44.208440+00:00",
+    "raw_input_summary": "3 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.87,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "brute_force",
+              "description": "47 failed SSH login attempts from 192.168.1.105 within 3 minutes",
+              "severity": "high"
+            },
+            {
+              "pattern_type": "privilege_escalation",
+              "description": "User 'jdoe' escalated to root via sudo 12 seconds after first successful login",
+              "severity": "critical"
+            }
+          ],
+          "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalated privileges to root within seconds, indicating automated post-exploitation tooling.",
+          "events_analyzed": 3
+        },
+        "execution_time_ms": 5.88
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "brute_force",
+          "confidence_score": 0.92,
+          "explanation": "The pattern of 47 failed SSH login attempts in rapid succession from a single IP address, followed by a successful login and immediate privilege escalation, is a textbook brute-force attack combined with automated post-exploitation. The timing and volume are consistent with tools like Hydra or Medusa.",
+          "recommended_action": "block_ip",
+          "similar_incidents": [
+            {
+              "incident_id": "db069caa-4764-4499-885c-6c51bc9eee9c",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "2b114033-ebf3-44b6-b0a3-0593566b12b2",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "7154fe1d-6838-4ece-8b97-14abaac6b7d6",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "6190ab52-975f-44aa-a539-b5476ca5f756",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "e141c9f5-caec-4b2f-8cc5-cf326a026c03",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            }
+          ]
+        },
+        "execution_time_ms": 1.99
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "ssh-gateway-01",
+            "db-primary-01",
+            "app-server-01",
+            "app-server-02"
+          ],
+          "risk_level": "critical",
+          "estimated_downtime": "2-4 hours",
+          "estimated_financial_impact": "$45,000 - $120,000",
+          "blast_radius": "high",
+          "severity_score": 9.2,
+          "scenario_description": "With root access, the attacker could exfiltrate the primary database, install persistent backdoors across application servers, and pivot to internal network segments. Estimated data at risk: 2.3M customer records."
+        },
+        "execution_time_ms": 1.88
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.92,
+          "threshold": 0.85,
+          "actions_taken": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:59:44.195932+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.03
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:59:44.197931+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:59:44.195932+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.03
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T13:59:44.197931+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ]
+        },
+        "execution_time_ms": 3.93
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "A coordinated cyber attack was detected and automatically mitigated. An attacker attempted to breach our SSH gateway using brute-force methods, briefly gaining elevated access before our automated defense system blocked the attack and isolated affected systems. No data loss occurred. Estimated prevented damage: $45,000-$120,000.",
+          "technical_report": "## Incident Timeline\n\n- **22:14:03 UTC** \u2014 First failed SSH login from 192.168.1.105\n- **22:17:12 UTC** \u2014 47th failed attempt; successful login with user 'jdoe'\n- **22:17:24 UTC** \u2014 Privilege escalation to root via sudo\n- **22:17:25 UTC** \u2014 Anomaly detected by Nova Log Intelligence\n- **22:17:26 UTC** \u2014 IP blocked, user disabled, firewall updated\n\n## Indicators of Compromise\n- Source IP: 192.168.1.105\n- Targeted service: SSH (port 22)\n- Compromised account: jdoe\n\n## Remediation\n- IP permanently blocked\n- Account disabled pending investigation\n- SSH gateway isolated for forensic analysis\n- Firewall rules updated to restrict SSH access\n\n## Prevention Recommendations\n- Implement SSH key-only authentication\n- Deploy fail2ban with stricter thresholds\n- Enable multi-factor authentication for privileged accounts\n- Review sudo policies and implement least-privilege access",
+          "prevention_recommendations": [
+            "Implement SSH key-only authentication",
+            "Deploy fail2ban with stricter thresholds",
+            "Enable multi-factor authentication",
+            "Implement account lockout policies",
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "Nova's multi-agent analysis classified this incident as a brute-force attack with high confidence (92%). The classification was driven by the detection of 47 failed SSH login attempts from a single source IP within a 3-minute window \u2014 a pattern consistent with automated credential-stuffing tools. The anomaly score of 0.87 exceeded the baseline threshold by 3.2 standard deviations. Confidence was further reinforced by similarity to 2 prior incidents in the vector memory store (avg similarity: 0.84), both confirmed brute-force attacks. The immediate privilege escalation to root 12 seconds post-breach elevated the severity from 'high' to 'critical', triggering automated containment via Nova Act.",
+          "metadata": {
+            "generated_at": "2026-02-17T13:59:44.202410+00:00",
+            "incident_id": "c24ea581-ceed-45c7-a35f-92f61b29bee2"
+          }
+        },
+        "execution_time_ms": 3.42
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-17T13:59:44.182509+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-17T13:59:44.182509+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:59:44.190933+00:00",
+        "decision": "Found 5 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-17T13:59:44.190933+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:59:44.192950+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:59:44.194931+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:59:44.197931+00:00",
+        "decision": "Confidence 92.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-17T13:59:44.197931+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-17T13:59:44.208440+00:00",
+        "decision": "Pipeline completed in 25.43ms"
+      }
+    ]
+  },
+  "a479935d-49ce-47af-8df9-927a5f34ba35": {
+    "incident_id": "a479935d-49ce-47af-8df9-927a5f34ba35",
+    "status": "completed",
+    "created_at": "2026-02-17T14:01:42.128819+00:00",
+    "updated_at": "2026-02-17T14:01:42.149504+00:00",
+    "raw_input_summary": "3 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.87,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "brute_force",
+              "description": "47 failed SSH login attempts from 192.168.1.105 within 3 minutes",
+              "severity": "high"
+            },
+            {
+              "pattern_type": "privilege_escalation",
+              "description": "User 'jdoe' escalated to root via sudo 12 seconds after first successful login",
+              "severity": "critical"
+            }
+          ],
+          "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalated privileges to root within seconds, indicating automated post-exploitation tooling.",
+          "events_analyzed": 3
+        },
+        "execution_time_ms": 5.25
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "brute_force",
+          "confidence_score": 0.92,
+          "explanation": "The pattern of 47 failed SSH login attempts in rapid succession from a single IP address, followed by a successful login and immediate privilege escalation, is a textbook brute-force attack combined with automated post-exploitation. The timing and volume are consistent with tools like Hydra or Medusa.",
+          "recommended_action": "block_ip",
+          "similar_incidents": [
+            {
+              "incident_id": "c24ea581-ceed-45c7-a35f-92f61b29bee2",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "db069caa-4764-4499-885c-6c51bc9eee9c",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "2b114033-ebf3-44b6-b0a3-0593566b12b2",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "7154fe1d-6838-4ece-8b97-14abaac6b7d6",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "6190ab52-975f-44aa-a539-b5476ca5f756",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            }
+          ]
+        },
+        "execution_time_ms": 1.53
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "ssh-gateway-01",
+            "db-primary-01",
+            "app-server-01",
+            "app-server-02"
+          ],
+          "risk_level": "critical",
+          "estimated_downtime": "2-4 hours",
+          "estimated_financial_impact": "$45,000 - $120,000",
+          "blast_radius": "high",
+          "severity_score": 9.2,
+          "scenario_description": "With root access, the attacker could exfiltrate the primary database, install persistent backdoors across application servers, and pivot to internal network segments. Estimated data at risk: 2.3M customer records."
+        },
+        "execution_time_ms": 1.43
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.92,
+          "threshold": 0.85,
+          "actions_taken": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T14:01:42.139540+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.02
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T14:01:42.140543+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T14:01:42.139540+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.02
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T14:01:42.140543+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ]
+        },
+        "execution_time_ms": 2.7
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "A coordinated cyber attack was detected and automatically mitigated. An attacker attempted to breach our SSH gateway using brute-force methods, briefly gaining elevated access before our automated defense system blocked the attack and isolated affected systems. No data loss occurred. Estimated prevented damage: $45,000-$120,000.",
+          "technical_report": "## Incident Timeline\n\n- **22:14:03 UTC** \u2014 First failed SSH login from 192.168.1.105\n- **22:17:12 UTC** \u2014 47th failed attempt; successful login with user 'jdoe'\n- **22:17:24 UTC** \u2014 Privilege escalation to root via sudo\n- **22:17:25 UTC** \u2014 Anomaly detected by Nova Log Intelligence\n- **22:17:26 UTC** \u2014 IP blocked, user disabled, firewall updated\n\n## Indicators of Compromise\n- Source IP: 192.168.1.105\n- Targeted service: SSH (port 22)\n- Compromised account: jdoe\n\n## Remediation\n- IP permanently blocked\n- Account disabled pending investigation\n- SSH gateway isolated for forensic analysis\n- Firewall rules updated to restrict SSH access\n\n## Prevention Recommendations\n- Implement SSH key-only authentication\n- Deploy fail2ban with stricter thresholds\n- Enable multi-factor authentication for privileged accounts\n- Review sudo policies and implement least-privilege access",
+          "prevention_recommendations": [
+            "Implement SSH key-only authentication",
+            "Deploy fail2ban with stricter thresholds",
+            "Enable multi-factor authentication",
+            "Implement account lockout policies",
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "Nova's multi-agent analysis classified this incident as a brute-force attack with high confidence (92%). The classification was driven by the detection of 47 failed SSH login attempts from a single source IP within a 3-minute window \u2014 a pattern consistent with automated credential-stuffing tools. The anomaly score of 0.87 exceeded the baseline threshold by 3.2 standard deviations. Confidence was further reinforced by similarity to 2 prior incidents in the vector memory store (avg similarity: 0.84), both confirmed brute-force attacks. The immediate privilege escalation to root 12 seconds post-breach elevated the severity from 'high' to 'critical', triggering automated containment via Nova Act.",
+          "metadata": {
+            "generated_at": "2026-02-17T14:01:42.143812+00:00",
+            "incident_id": "a479935d-49ce-47af-8df9-927a5f34ba35"
+          }
+        },
+        "execution_time_ms": 2.98
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-17T14:01:42.128819+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-17T14:01:42.128819+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-17T14:01:42.134405+00:00",
+        "decision": "Found 5 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-17T14:01:42.134405+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-17T14:01:42.136491+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-17T14:01:42.138504+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-17T14:01:42.140543+00:00",
+        "decision": "Confidence 92.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-17T14:01:42.140543+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-17T14:01:42.149504+00:00",
+        "decision": "Pipeline completed in 21.07ms"
+      }
+    ]
+  },
+  "7e50c8f0-d6c8-4908-9800-e5b4774ba174": {
+    "incident_id": "7e50c8f0-d6c8-4908-9800-e5b4774ba174",
+    "status": "completed",
+    "created_at": "2026-02-17T14:12:34.578997+00:00",
+    "updated_at": "2026-02-17T14:12:34.606071+00:00",
+    "raw_input_summary": "3 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.87,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "brute_force",
+              "description": "47 failed SSH login attempts from 192.168.1.105 within 3 minutes",
+              "severity": "high"
+            },
+            {
+              "pattern_type": "privilege_escalation",
+              "description": "User 'jdoe' escalated to root via sudo 12 seconds after first successful login",
+              "severity": "critical"
+            }
+          ],
+          "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalated privileges to root within seconds, indicating automated post-exploitation tooling.",
+          "events_analyzed": 3
+        },
+        "execution_time_ms": 5.42
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "brute_force",
+          "confidence_score": 0.92,
+          "explanation": "The pattern of 47 failed SSH login attempts in rapid succession from a single IP address, followed by a successful login and immediate privilege escalation, is a textbook brute-force attack combined with automated post-exploitation. The timing and volume are consistent with tools like Hydra or Medusa.",
+          "recommended_action": "block_ip",
+          "similar_incidents": [
+            {
+              "incident_id": "a479935d-49ce-47af-8df9-927a5f34ba35",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "c24ea581-ceed-45c7-a35f-92f61b29bee2",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "db069caa-4764-4499-885c-6c51bc9eee9c",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "2b114033-ebf3-44b6-b0a3-0593566b12b2",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "7154fe1d-6838-4ece-8b97-14abaac6b7d6",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            }
+          ]
+        },
+        "execution_time_ms": 2.23
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "ssh-gateway-01",
+            "db-primary-01",
+            "app-server-01",
+            "app-server-02"
+          ],
+          "risk_level": "critical",
+          "estimated_downtime": "2-4 hours",
+          "estimated_financial_impact": "$45,000 - $120,000",
+          "blast_radius": "high",
+          "severity_score": 9.2,
+          "scenario_description": "With root access, the attacker could exfiltrate the primary database, install persistent backdoors across application servers, and pivot to internal network segments. Estimated data at risk: 2.3M customer records."
+        },
+        "execution_time_ms": 1.96
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.92,
+          "threshold": 0.85,
+          "actions_taken": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T14:12:34.590473+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.03
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T14:12:34.593277+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T14:12:34.590473+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.03
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T14:12:34.593277+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ]
+        },
+        "execution_time_ms": 4.4
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "A coordinated cyber attack was detected and automatically mitigated. An attacker attempted to breach our SSH gateway using brute-force methods, briefly gaining elevated access before our automated defense system blocked the attack and isolated affected systems. No data loss occurred. Estimated prevented damage: $45,000-$120,000.",
+          "technical_report": "## Incident Timeline\n\n- **22:14:03 UTC** \u2014 First failed SSH login from 192.168.1.105\n- **22:17:12 UTC** \u2014 47th failed attempt; successful login with user 'jdoe'\n- **22:17:24 UTC** \u2014 Privilege escalation to root via sudo\n- **22:17:25 UTC** \u2014 Anomaly detected by Nova Log Intelligence\n- **22:17:26 UTC** \u2014 IP blocked, user disabled, firewall updated\n\n## Indicators of Compromise\n- Source IP: 192.168.1.105\n- Targeted service: SSH (port 22)\n- Compromised account: jdoe\n\n## Remediation\n- IP permanently blocked\n- Account disabled pending investigation\n- SSH gateway isolated for forensic analysis\n- Firewall rules updated to restrict SSH access\n\n## Prevention Recommendations\n- Implement SSH key-only authentication\n- Deploy fail2ban with stricter thresholds\n- Enable multi-factor authentication for privileged accounts\n- Review sudo policies and implement least-privilege access",
+          "prevention_recommendations": [
+            "Implement SSH key-only authentication",
+            "Deploy fail2ban with stricter thresholds",
+            "Enable multi-factor authentication",
+            "Implement account lockout policies",
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "Nova's multi-agent analysis classified this incident as a brute-force attack with high confidence (92%). The classification was driven by the detection of 47 failed SSH login attempts from a single source IP within a 3-minute window \u2014 a pattern consistent with automated credential-stuffing tools. The anomaly score of 0.87 exceeded the baseline threshold by 3.2 standard deviations. Confidence was further reinforced by similarity to 2 prior incidents in the vector memory store (avg similarity: 0.84), both confirmed brute-force attacks. The immediate privilege escalation to root 12 seconds post-breach elevated the severity from 'high' to 'critical', triggering automated containment via Nova Act.",
+          "metadata": {
+            "generated_at": "2026-02-17T14:12:34.598862+00:00",
+            "incident_id": "7e50c8f0-d6c8-4908-9800-e5b4774ba174"
+          }
+        },
+        "execution_time_ms": 4.5
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-17T14:12:34.578997+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-17T14:12:34.578997+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-17T14:12:34.584046+00:00",
+        "decision": "Found 5 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-17T14:12:34.584046+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-17T14:12:34.587332+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-17T14:12:34.589471+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-17T14:12:34.594294+00:00",
+        "decision": "Confidence 92.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-17T14:12:34.594294+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-17T14:12:34.606071+00:00",
+        "decision": "Pipeline completed in 27.31ms"
+      }
+    ]
+  },
+  "bef4c45f-1035-4981-888e-f402ab4ebe21": {
+    "incident_id": "bef4c45f-1035-4981-888e-f402ab4ebe21",
+    "status": "completed",
+    "created_at": "2026-02-17T16:28:39.120403+00:00",
+    "updated_at": "2026-02-17T16:28:39.140793+00:00",
+    "raw_input_summary": "3 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.87,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "brute_force",
+              "description": "47 failed SSH login attempts from 192.168.1.105 within 3 minutes",
+              "severity": "high"
+            },
+            {
+              "pattern_type": "privilege_escalation",
+              "description": "User 'jdoe' escalated to root via sudo 12 seconds after first successful login",
+              "severity": "critical"
+            }
+          ],
+          "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalated privileges to root within seconds, indicating automated post-exploitation tooling.",
+          "events_analyzed": 3
+        },
+        "execution_time_ms": 4.8
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "brute_force",
+          "confidence_score": 0.92,
+          "explanation": "The pattern of 47 failed SSH login attempts in rapid succession from a single IP address, followed by a successful login and immediate privilege escalation, is a textbook brute-force attack combined with automated post-exploitation. The timing and volume are consistent with tools like Hydra or Medusa.",
+          "recommended_action": "block_ip",
+          "similar_incidents": [
+            {
+              "incident_id": "a479935d-49ce-47af-8df9-927a5f34ba35",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "c24ea581-ceed-45c7-a35f-92f61b29bee2",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "7e50c8f0-d6c8-4908-9800-e5b4774ba174",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "db069caa-4764-4499-885c-6c51bc9eee9c",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            },
+            {
+              "incident_id": "2b114033-ebf3-44b6-b0a3-0593566b12b2",
+              "similarity_score": 0.8215,
+              "threat_type": "brute_force",
+              "confidence_score": 0.92,
+              "anomaly_score": 0.87,
+              "summary": "Detected a coordinated brute-force attack followed by immediate privilege escalation. The attack originated from IP 192.168.1.105, targeting the SSH service. After gaining access, the attacker escalat"
+            }
+          ]
+        },
+        "execution_time_ms": 1.78
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "ssh-gateway-01",
+            "db-primary-01",
+            "app-server-01",
+            "app-server-02"
+          ],
+          "risk_level": "critical",
+          "estimated_downtime": "2-4 hours",
+          "estimated_financial_impact": "$45,000 - $120,000",
+          "blast_radius": "high",
+          "severity_score": 9.2,
+          "scenario_description": "With root access, the attacker could exfiltrate the primary database, install persistent backdoors across application servers, and pivot to internal network segments. Estimated data at risk: 2.3M customer records."
+        },
+        "execution_time_ms": 1.49
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.92,
+          "threshold": 0.85,
+          "actions_taken": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T16:28:39.130337+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.02
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T16:28:39.132871+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.105",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T16:28:39.130337+00:00",
+              "details": {
+                "rule_added": "iptables -A INPUT -s 192.168.1.105 -j DROP",
+                "firewall": "primary",
+                "duration": "permanent"
+              },
+              "execution_time_ms": 0.02
+            },
+            {
+              "action_type": "disable_user",
+              "target": "jdoe",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-17T16:28:39.132871+00:00",
+              "details": {
+                "command": "usermod -L jdoe",
+                "sessions_terminated": 3,
+                "tokens_revoked": true
+              },
+              "execution_time_ms": 0.02
+            }
+          ]
+        },
+        "execution_time_ms": 3.01
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "A coordinated cyber attack was detected and automatically mitigated. An attacker attempted to breach our SSH gateway using brute-force methods, briefly gaining elevated access before our automated defense system blocked the attack and isolated affected systems. No data loss occurred. Estimated prevented damage: $45,000-$120,000.",
+          "technical_report": "## Incident Timeline\n\n- **22:14:03 UTC** \u2014 First failed SSH login from 192.168.1.105\n- **22:17:12 UTC** \u2014 47th failed attempt; successful login with user 'jdoe'\n- **22:17:24 UTC** \u2014 Privilege escalation to root via sudo\n- **22:17:25 UTC** \u2014 Anomaly detected by Nova Log Intelligence\n- **22:17:26 UTC** \u2014 IP blocked, user disabled, firewall updated\n\n## Indicators of Compromise\n- Source IP: 192.168.1.105\n- Targeted service: SSH (port 22)\n- Compromised account: jdoe\n\n## Remediation\n- IP permanently blocked\n- Account disabled pending investigation\n- SSH gateway isolated for forensic analysis\n- Firewall rules updated to restrict SSH access\n\n## Prevention Recommendations\n- Implement SSH key-only authentication\n- Deploy fail2ban with stricter thresholds\n- Enable multi-factor authentication for privileged accounts\n- Review sudo policies and implement least-privilege access",
+          "prevention_recommendations": [
+            "Implement SSH key-only authentication",
+            "Deploy fail2ban with stricter thresholds",
+            "Enable multi-factor authentication",
+            "Implement account lockout policies",
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "Nova's multi-agent analysis classified this incident as a brute-force attack with high confidence (92%). The classification was driven by the detection of 47 failed SSH login attempts from a single source IP within a 3-minute window \u2014 a pattern consistent with automated credential-stuffing tools. The anomaly score of 0.87 exceeded the baseline threshold by 3.2 standard deviations. Confidence was further reinforced by similarity to 2 prior incidents in the vector memory store (avg similarity: 0.84), both confirmed brute-force attacks. The immediate privilege escalation to root 12 seconds post-breach elevated the severity from 'high' to 'critical', triggering automated containment via Nova Act.",
+          "metadata": {
+            "generated_at": "2026-02-17T16:28:39.135891+00:00",
+            "incident_id": "bef4c45f-1035-4981-888e-f402ab4ebe21"
+          }
+        },
+        "execution_time_ms": 2.56
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-17T16:28:39.120403+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-17T16:28:39.120403+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-17T16:28:39.126345+00:00",
+        "decision": "Found 5 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-17T16:28:39.126345+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-17T16:28:39.128330+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-17T16:28:39.129379+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-17T16:28:39.132871+00:00",
+        "decision": "Confidence 92.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-17T16:28:39.132871+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-17T16:28:39.140793+00:00",
+        "decision": "Pipeline completed in 20.08ms"
+      }
+    ]
+  }
+}
