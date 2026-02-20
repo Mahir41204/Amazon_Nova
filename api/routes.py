@@ -330,6 +330,11 @@ async def run_demo(
 
     Requires Admin role.
     """
+    import sys
+    from pathlib import Path
+    data_dir = str(Path(__file__).resolve().parent.parent / "data")
+    if data_dir not in sys.path:
+        sys.path.insert(0, data_dir)
     from demo.synthetic_logs import generate_brute_force_logs
 
     orchestrator = _get_orchestrator()

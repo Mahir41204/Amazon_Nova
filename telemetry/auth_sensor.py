@@ -46,7 +46,14 @@ class AuthSensor(BaseSensor):
 
     # Shared observation buffer (class-level so middleware can push without reference)
     _observations: list[dict[str, Any]] = []
-    _obs_lock = asyncio.Lock()
+    _obs_lock: asyncio.Lock | None = None
+
+    @classmethod
+    def _get_lock(cls) -> asyncio.Lock:
+        """Lazily create the asyncio.Lock inside a running event loop."""
+        if cls._obs_lock is None:
+            cls._obs_lock = asyncio.Lock()
+        return cls._obs_lock
 
     def __init__(self, poll_interval: float = 3.0) -> None:
         super().__init__(poll_interval=poll_interval)
@@ -65,7 +72,7 @@ class AuthSensor(BaseSensor):
     @classmethod
     async def record_failed_login(cls, ip: str, username: str = "") -> None:
         """Record a failed login attempt."""
-        async with cls._obs_lock:
+        async with cls._get_lock():
             cls._observations.append({
                 "type": "failed_login",
                 "ip": ip,
@@ -76,7 +83,7 @@ class AuthSensor(BaseSensor):
     @classmethod
     async def record_token_failure(cls, ip: str) -> None:
         """Record a JWT/token validation failure."""
-        async with cls._obs_lock:
+        async with cls._get_lock():
             cls._observations.append({
                 "type": "token_failure",
                 "ip": ip,
@@ -86,7 +93,7 @@ class AuthSensor(BaseSensor):
     @classmethod
     async def record_session_creation(cls, ip: str, username: str = "") -> None:
         """Record a new session/token creation."""
-        async with cls._obs_lock:
+        async with cls._get_lock():
             cls._observations.append({
                 "type": "session_created",
                 "ip": ip,
@@ -99,7 +106,7 @@ class AuthSensor(BaseSensor):
     async def _collect_impl(self) -> list[TelemetryEvent]:
         """Analyse buffered observations and emit anomaly events."""
         # Drain observations
-        async with self._obs_lock:
+        async with self._get_lock():
             observations = self._observations.copy()
             self._observations.clear()
 
