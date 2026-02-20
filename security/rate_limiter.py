@@ -3,6 +3,13 @@ RateLimiter — token-bucket rate limiter for FastAPI.
 
 Configurable requests-per-minute per client IP.
 Implemented as ASGI middleware.
+
+.. warning::
+   This implementation uses an **in-memory dictionary** and is therefore
+   **per-process only**.  With multiple uvicorn workers each process keeps
+   its own bucket state, so effective limits are multiplied by the worker
+   count.  For production multi-worker deployments, replace the backing
+   store with Redis or another shared data store.
 """
 
 from __future__ import annotations
@@ -26,6 +33,10 @@ class RateLimiter(BaseHTTPMiddleware):
 
     Tracks requests per client IP and returns 429 when the
     configured RPM is exceeded.
+
+    .. note::
+       Per-process only.  In multi-worker mode each worker maintains
+       its own independent state.  See module docstring for details.
     """
 
     def __init__(self, app: Any) -> None:

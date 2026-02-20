@@ -58,7 +58,7 @@ class NovaActClientError(NovaBaseError):
     """Raised when communication with the Nova Act API fails."""
 
 
-class MemoryError(NovaBaseError):
+class VectorStoreError(NovaBaseError):
     """Raised when the memory / vector store encounters an error."""
 
 
