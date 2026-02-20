@@ -93,7 +93,7 @@ class Orchestrator:
             self._trace.render_header(incident_id)
 
             # 2. Log Intelligence
-            log_output = self._run_agent(
+            log_output = await self._run_agent(
                 self._log_agent, input_data, incident_id, "log_analysis"
             )
             self._trace.render_stage("log_analysis", log_output)
@@ -114,7 +114,7 @@ class Orchestrator:
                     for s in similar_incidents
                 ],
             }
-            threat_output = self._run_agent(
+            threat_output = await self._run_agent(
                 self._threat_agent, classification_input, incident_id, "threat_classification"
             )
             self._trace.render_stage("threat_classification", threat_output)
@@ -125,7 +125,7 @@ class Orchestrator:
                 "suspicious_patterns": log_output.get("suspicious_patterns", []),
                 "anomaly_score": log_output.get("anomaly_score", 0),
             }
-            impact_output = self._run_agent(
+            impact_output = await self._run_agent(
                 self._impact_agent, impact_input, incident_id, "impact_simulation"
             )
             self._trace.render_stage("impact_simulation", impact_output)
@@ -136,7 +136,7 @@ class Orchestrator:
                 "risk_level": impact_output.get("risk_level", "unknown"),
                 "suspicious_patterns": log_output.get("suspicious_patterns", []),
             }
-            response_output = self._run_agent(
+            response_output = await self._run_agent(
                 self._response_agent, response_input, incident_id, "response"
             )
             self._trace.render_stage("response", response_output)
@@ -161,7 +161,7 @@ class Orchestrator:
                 "impact_simulation": impact_output,
                 "response": response_output,
             }
-            report_output = self._run_agent(
+            report_output = await self._run_agent(
                 self._reporting_agent, report_input, incident_id, "reporting"
             )
             self._trace.render_stage("reporting", report_output)
@@ -334,7 +334,7 @@ class Orchestrator:
             "threat_type": threat_type,
             "confidence_score": 1.0,  # manual simulation = full confidence
         }
-        result = self._impact_agent.execute(simulation_input)
+        result = await self._impact_agent.execute(simulation_input)
         return result.get("result", result)
 
     def get_incident(self, incident_id: str) -> dict[str, Any] | None:
@@ -347,7 +347,7 @@ class Orchestrator:
 
     # ── Private helpers ─────────────────────────────────────────────────
 
-    def _run_agent(
+    async def _run_agent(
         self,
         agent: Any,
         input_data: dict[str, Any],
@@ -358,7 +358,7 @@ class Orchestrator:
         self._state.add_decision(incident_id, f"Running {agent.name} agent")
         logger.info("──── Running %s agent ────", agent.name)
 
-        output = agent.execute(input_data)
+        output = await agent.execute(input_data)
         result = output.get("result", output)
 
         self._state.update_stage(incident_id, stage_name, output)

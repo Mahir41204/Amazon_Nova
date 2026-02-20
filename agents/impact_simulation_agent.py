@@ -134,18 +134,14 @@ class ImpactSimulationAgent(BaseAgent):
 
         return model
 
-    def act(self, reasoning: dict[str, Any]) -> dict[str, Any]:
+    async def act(self, reasoning: dict[str, Any]) -> dict[str, Any]:
         """Produce the final impact simulation report."""
-        from core.async_utils import run_async
-
         # Get Nova-enhanced simulation
         try:
-            nova_response = run_async(
-                self._nova.invoke(
-                    prompt=json.dumps(reasoning),
-                    system_prompt="You are a cybersecurity impact analyst. Simulate the impact scenario.",
-                    context="impact_simulation",
-                )
+            nova_response = await self._nova.invoke(
+                prompt=json.dumps(reasoning),
+                system_prompt="You are a cybersecurity impact analyst. Simulate the impact scenario.",
+                context="impact_simulation",
             )
             nova_data = json.loads(nova_response)
         except Exception:

@@ -86,18 +86,14 @@ class ReportingAgent(BaseAgent):
             "scenario_description": impact.get("scenario_description", ""),
         }
 
-    def act(self, reasoning: dict[str, Any]) -> dict[str, Any]:
+    async def act(self, reasoning: dict[str, Any]) -> dict[str, Any]:
         """Generate the final formatted reports."""
-        from core.async_utils import run_async
-
         # Get Nova-enhanced report
         try:
-            nova_response = run_async(
-                self._nova.invoke(
-                    prompt=json.dumps(reasoning),
-                    system_prompt="You are a cybersecurity report writer. Generate executive and technical reports.",
-                    context="report_generation",
-                )
+            nova_response = await self._nova.invoke(
+                prompt=json.dumps(reasoning),
+                system_prompt="You are a cybersecurity report writer. Generate executive and technical reports.",
+                context="report_generation",
             )
             nova_data = json.loads(nova_response)
         except Exception:
@@ -118,7 +114,7 @@ class ReportingAgent(BaseAgent):
             "executive_summary": executive_summary,
             "technical_report": technical_report,
             "prevention_recommendations": recommendations,
-            "nova_reasoning_summary": self._build_nova_reasoning_summary(reasoning),
+            "nova_reasoning_summary": await self._build_nova_reasoning_summary(reasoning),
             "metadata": {
                 "generated_at": datetime.now(timezone.utc).isoformat(),
                 "incident_id": reasoning["technical"]["incident_id"],
@@ -232,7 +228,7 @@ class ReportingAgent(BaseAgent):
 
         return specific.get(threat_type, []) + common
 
-    def _build_nova_reasoning_summary(self, reasoning: dict[str, Any]) -> str:
+    async def _build_nova_reasoning_summary(self, reasoning: dict[str, Any]) -> str:
         """Generate a 'Nova AI Reasoning Summary' via a dedicated Nova call.
 
         Synthesizes:
@@ -241,24 +237,20 @@ class ReportingAgent(BaseAgent):
           • Confidence scoring rationale
           • Memory similarity influence (if applicable)
         """
-        from core.async_utils import run_async
-
         reasoning_prompt = self._build_reasoning_prompt(reasoning)
 
         try:
-            nova_response = run_async(
-                self._nova.invoke(
-                    prompt=reasoning_prompt,
-                    system_prompt=(
-                        "You are a cybersecurity AI analyst. Write a concise "
-                        "'Nova AI Reasoning Summary' section that explains WHY "
-                        "the threat was classified as it was, what anomaly signals "
-                        "influenced the decision, how confidence was determined, "
-                        "and whether past incident similarity contributed. "
-                        "Write in third-person analytical tone. 3-5 sentences max."
-                    ),
-                    context="nova_reasoning_summary",
-                )
+            nova_response = await self._nova.invoke(
+                prompt=reasoning_prompt,
+                system_prompt=(
+                    "You are a cybersecurity AI analyst. Write a concise "
+                    "'Nova AI Reasoning Summary' section that explains WHY "
+                    "the threat was classified as it was, what anomaly signals "
+                    "influenced the decision, how confidence was determined, "
+                    "and whether past incident similarity contributed. "
+                    "Write in third-person analytical tone. 3-5 sentences max."
+                ),
+                context="nova_reasoning_summary",
             )
             # Try to parse JSON response, else use raw text
             try:

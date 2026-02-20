@@ -126,10 +126,8 @@ class ResponseAgent(BaseAgent):
             "threat_type": analysis["threat_type"],
         }
 
-    def act(self, reasoning: dict[str, Any]) -> dict[str, Any]:
+    async def act(self, reasoning: dict[str, Any]) -> dict[str, Any]:
         """Execute or defer actions based on confidence decision."""
-        from core.async_utils import run_async
-
         decision = reasoning["decision"]
         actions_taken: list[dict[str, Any]] = []
         actions_deferred: list[dict[str, Any]] = []
@@ -140,12 +138,10 @@ class ResponseAgent(BaseAgent):
                 target = self._resolve_target(action_type, reasoning["targets"])
 
                 try:
-                    result = run_async(
-                        self._act_client.execute_action(
-                            action_type=action_type,
-                            params={"target": target},
-                            confidence=reasoning["confidence_score"],
-                        )
+                    result = await self._act_client.execute_action(
+                        action_type=action_type,
+                        params={"target": target},
+                        confidence=reasoning["confidence_score"],
                     )
 
                     actions_taken.append({

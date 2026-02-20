@@ -40,12 +40,12 @@ class BaseAgent(ABC):
         """Apply domain logic / LLM reasoning on the analysed data."""
 
     @abstractmethod
-    def act(self, reasoning: dict[str, Any]) -> dict[str, Any]:
+    async def act(self, reasoning: dict[str, Any]) -> dict[str, Any]:
         """Produce the final structured output (action / report)."""
 
     # ── Template method ─────────────────────────────────────────────────
 
-    def execute(self, data: dict[str, Any]) -> dict[str, Any]:
+    async def execute(self, data: dict[str, Any]) -> dict[str, Any]:
         """Run the full agent pipeline: analyze → reason → act.
 
         Returns a structured dict with ``agent``, ``result``, and
@@ -62,7 +62,7 @@ class BaseAgent(ABC):
             reasoning = self.reason(analysis)
             self._logger.debug("[%s] Reasoning complete: %s", self.name, list(reasoning.keys()))
 
-            result = self.act(reasoning)
+            result = await self.act(reasoning)
             self._logger.debug("[%s] Action complete: %s", self.name, list(result.keys()))
 
         except AgentError:

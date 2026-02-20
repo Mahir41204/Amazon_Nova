@@ -99,18 +99,14 @@ class LogIntelligenceAgent(BaseAgent):
             "events_analyzed": len(events),
         }
 
-    def act(self, reasoning: dict[str, Any]) -> dict[str, Any]:
+    async def act(self, reasoning: dict[str, Any]) -> dict[str, Any]:
         """Produce the final structured output with Nova-enhanced summary."""
-        from core.async_utils import run_async
-
         # Get Nova-enhanced analysis summary
         try:
-            nova_response = run_async(
-                self._nova.invoke(
-                    prompt=json.dumps(reasoning),
-                    system_prompt="You are a cybersecurity log analyst. Analyze the patterns and provide a concise threat assessment.",
-                    context="log_analysis",
-                )
+            nova_response = await self._nova.invoke(
+                prompt=json.dumps(reasoning),
+                system_prompt="You are a cybersecurity log analyst. Analyze the patterns and provide a concise threat assessment.",
+                context="log_analysis",
             )
             nova_data = json.loads(nova_response)
         except Exception:

@@ -125,21 +125,17 @@ class ThreatClassificationAgent(BaseAgent):
             "similar_incidents": similar,
         }
 
-    def act(self, reasoning: dict[str, Any]) -> dict[str, Any]:
+    async def act(self, reasoning: dict[str, Any]) -> dict[str, Any]:
         """Produce the final classification output with Nova-enhanced explanation."""
-        from core.async_utils import run_async
-
         threat_type = reasoning["threat_type"]
         confidence = reasoning["confidence_score"]
 
         # Get Nova-enhanced explanation
         try:
-            nova_response = run_async(
-                self._nova.invoke(
-                    prompt=json.dumps(reasoning),
-                    system_prompt="You are a threat classification expert. Classify the threat and explain your reasoning.",
-                    context="threat_classification",
-                )
+            nova_response = await self._nova.invoke(
+                prompt=json.dumps(reasoning),
+                system_prompt="You are a threat classification expert. Classify the threat and explain your reasoning.",
+                context="threat_classification",
             )
             nova_data = json.loads(nova_response)
         except Exception:
