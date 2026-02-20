@@ -444,24 +444,18 @@ async def _run_daemon(simulate: bool = False) -> None:
         stream=sys.stdout,
     )
 
+    from daemon.lifecycle import DaemonLifecycle
+
     daemon = NovaSentinelDaemon()
-    await daemon.start()
+    lifecycle = DaemonLifecycle(daemon)
+    await lifecycle.start()
 
     if simulate:
         await daemon.simulate_live_attack()
-        await daemon.stop()
+        await lifecycle.stop()
     else:
-        # Run until interrupted
-        from daemon.lifecycle import DaemonLifecycle
-        lifecycle = DaemonLifecycle(daemon)
-        try:
-            print("\n  Press Ctrl+C to stop...\n")
-            while daemon.running:
-                await asyncio.sleep(1.0)
-        except KeyboardInterrupt:
-            pass
-        finally:
-            await daemon.stop()
+        # Run until interrupted — lifecycle handles signal registration
+        await lifecycle.wait_for_shutdown()
 
 
 if __name__ == "__main__":

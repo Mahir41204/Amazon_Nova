@@ -93,7 +93,7 @@ class IncidentTriggerEvent:
     source_ip: str
     suspicion_score: float
     event_count: int
-    window_events: list[LogEvent]
+    window_events: tuple[LogEvent, ...]
     trigger_time: datetime = field(
         default_factory=lambda: datetime.now(timezone.utc)
     )

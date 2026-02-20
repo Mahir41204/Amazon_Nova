@@ -178,7 +178,7 @@ class CorrelationEngine:
             source_ip=ip,
             suspicion_score=total_score,
             event_count=len(all_events),
-            window_events=window_log_events,
+            window_events=tuple(window_log_events),
             trigger_reason=(
                 f"Correlated suspicion {total_score:.2f} ≥ threshold {self._threshold:.2f} "
                 f"| sources: {score_info['source_scores']} "

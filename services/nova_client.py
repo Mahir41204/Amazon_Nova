@@ -133,10 +133,10 @@ class NovaClient:
     def _validate_production_config(self) -> None:
         """Validate that production credentials exist when production mode is on."""
         if self._settings.ENABLE_PRODUCTION_MODE and not self._settings.DEMO_MODE:
-            if not self._settings.NOVA_API_KEY:
+            if not self._settings.AWS_ACCESS_KEY_ID or not self._settings.AWS_SECRET_ACCESS_KEY:
                 raise NovaClientError(
-                    "ENABLE_PRODUCTION_MODE is True but NOVA_API_KEY is not set. "
-                    "Provide valid AWS credentials or set DEMO_MODE=True."
+                    "ENABLE_PRODUCTION_MODE is True but AWS credentials are not set. "
+                    "Provide AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY, or set DEMO_MODE=True."
                 )
             logger.info("NovaClient running in PRODUCTION mode (model: %s)", self._settings.NOVA_MODEL_ID)
 

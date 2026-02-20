@@ -105,7 +105,7 @@ class ThresholdEngine:
             source_ip=ip,
             suspicion_score=score,
             event_count=len(window_events),
-            window_events=window_events,
+            window_events=tuple(window_events),
             trigger_reason=(
                 f"Suspicion score {score:.2f} crossed threshold {threshold:.2f} "
                 f"({len(window_events)} events in window)"
