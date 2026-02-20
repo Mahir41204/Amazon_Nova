@@ -7,6 +7,7 @@ can be demonstrated without live API credentials.
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import time
@@ -232,15 +233,14 @@ class NovaClient:
 
         Uses the Bedrock Runtime `converse` API which provides a standardized
         interface for Nova and other models.
+
+        The synchronous boto3 call is offloaded to a thread via
+        ``asyncio.to_thread`` so it does not block the event loop.
         """
         try:
             import boto3
             from botocore.exceptions import ClientError
 
-            # Use synchronous client in async wrapper if needed, or run in executor.
-            # For simplicity in this hackathon context, we'll use the sync client directly
-            # as basic boto3 is synchronous. In a high-scale prod app, use aioboto3
-            # or run_in_executor.
             client = boto3.client(
                 "bedrock-runtime",
                 region_name=self._settings.NOVA_REGION,
@@ -257,7 +257,9 @@ class NovaClient:
                 "temperature": self._settings.NOVA_TEMPERATURE,
             }
 
-            response = client.converse(
+            # Offload blocking boto3 call to thread pool
+            response = await asyncio.to_thread(
+                client.converse,
                 modelId=self._settings.NOVA_MODEL_ID,
                 messages=messages,
                 system=system,

@@ -122,7 +122,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -141,10 +141,10 @@ if __name__ == "__main__":
 
     if run_mode == "daemon":
         # Standalone daemon mode
-        from daemon.daemon_service import _run_daemon
+        from daemon.realtime_daemon import _run_realtime_daemon
 
         simulate = "--simulate" in sys.argv
-        asyncio.run(_run_daemon(simulate=simulate))
+        asyncio.run(_run_realtime_daemon(simulate=simulate))
 
     else:
         # API or hybrid mode — let uvicorn handle it
