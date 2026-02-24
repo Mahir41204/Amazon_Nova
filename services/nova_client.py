@@ -163,6 +163,7 @@ class NovaClient:
             response = self._demo_response(context)
         else:
             response = await self._call_bedrock(prompt, system_prompt)
+            response = self._sanitize_json_response(response)
 
         elapsed_ms = round((time.perf_counter() - start) * 1000, 2)
 
@@ -222,6 +223,17 @@ class NovaClient:
             return clean[:max_len - 3] + "..."
         return clean
 
+    @staticmethod
+    def _sanitize_json_response(text: str) -> str:
+        """Strip markdown code fences that LLMs sometimes add around JSON."""
+        import re
+        cleaned = text.strip()
+        # Remove ```json ... ``` or ``` ... ``` wrappers
+        match = re.match(r"^```(?:json)?\s*\n?(.*?)\n?\s*```$", cleaned, re.DOTALL)
+        if match:
+            cleaned = match.group(1).strip()
+        return cleaned
+
     def _demo_response(self, context: str) -> str:
         """Return a realistic mock response for demo mode."""
         response = _DEMO_RESPONSES.get(context, '{"status": "ok"}')
@@ -244,6 +256,8 @@ class NovaClient:
             client = boto3.client(
                 "bedrock-runtime",
                 region_name=self._settings.NOVA_REGION,
+                aws_access_key_id=self._settings.AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=self._settings.AWS_SECRET_ACCESS_KEY,
             )
 
             messages = [

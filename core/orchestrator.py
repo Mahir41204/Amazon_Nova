@@ -109,6 +109,8 @@ class Orchestrator:
             # 4. Threat Classification (with similar incidents for confidence boost)
             classification_input = {
                 **log_output,
+                "raw_logs": raw_logs,
+                "log_summary": log_output.get("summary", ""),
                 "similar_incidents": [
                     {"incident_id": s.incident_id, "similarity_score": s.similarity_score, **s.metadata}
                     for s in similar_incidents
@@ -124,6 +126,7 @@ class Orchestrator:
                 **threat_output,
                 "suspicious_patterns": log_output.get("suspicious_patterns", []),
                 "anomaly_score": log_output.get("anomaly_score", 0),
+                "log_summary": log_output.get("summary", ""),
             }
             impact_output = self._run_agent(
                 self._impact_agent, impact_input, incident_id, "impact_simulation"

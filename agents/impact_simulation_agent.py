@@ -117,6 +117,7 @@ class ImpactSimulationAgent(BaseAgent):
             "confidence_score": data.get("confidence_score", 0.0),
             "patterns": data.get("suspicious_patterns", []),
             "anomaly_score": data.get("anomaly_score", 0.0),
+            "log_summary": data.get("log_summary", ""),
         }
 
     def reason(self, analysis: dict[str, Any]) -> dict[str, Any]:
@@ -131,6 +132,7 @@ class ImpactSimulationAgent(BaseAgent):
         severity = model["base_severity"] * (0.7 + 0.3 * confidence)
         model["adjusted_severity"] = round(severity, 1)
         model["confidence_factor"] = confidence
+        model["log_summary"] = analysis.get("log_summary", "")
 
         return model
 
@@ -138,12 +140,36 @@ class ImpactSimulationAgent(BaseAgent):
         """Produce the final impact simulation report."""
         from core.async_utils import run_async
 
+        # Build prompt with threat context
+        nova_prompt = json.dumps({
+            "heuristic_impact_model": {
+                "affected_systems": reasoning["affected_systems"],
+                "risk_level": reasoning["risk_level"],
+                "estimated_downtime": reasoning["estimated_downtime"],
+                "estimated_financial_impact": reasoning["estimated_financial_impact"],
+                "blast_radius": reasoning["blast_radius"],
+                "adjusted_severity": reasoning["adjusted_severity"],
+            },
+            "log_summary": reasoning.get("log_summary", ""),
+            "scenario": reasoning.get("scenario", ""),
+        })
+
         # Get Nova-enhanced simulation
         try:
             nova_response = run_async(
                 self._nova.invoke(
-                    prompt=json.dumps(reasoning),
-                    system_prompt="You are a cybersecurity impact analyst. Simulate the impact scenario.",
+                    prompt=nova_prompt,
+                    system_prompt=(
+                        "You are a cybersecurity impact analyst. You receive heuristic impact estimates and log analysis context. "
+                        "Simulate the REALISTIC potential impact based on the log_summary and scenario. "
+                        "Do NOT just echo the heuristic values — provide your own independent risk assessment. "
+                        "You MUST respond with ONLY valid JSON (no markdown, no explanation outside JSON). "
+                        "Use this exact schema: "
+                        '{"affected_systems": ["<string>", ...], "risk_level": "<low|medium|high|critical>", '
+                        '"estimated_downtime": "<string>", "estimated_financial_impact": "<string e.g. $X - $Y>", '
+                        '"blast_radius": "<low|medium|high|critical>", "severity_score": <float 0-10>, '
+                        '"scenario_description": "<string>"}'
+                    ),
                     context="impact_simulation",
                 )
             )

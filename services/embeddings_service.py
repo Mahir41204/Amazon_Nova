@@ -96,6 +96,8 @@ class EmbeddingsService:
             client = boto3.client(
                 "bedrock-runtime",
                 region_name=self._settings.NOVA_REGION,
+                aws_access_key_id=self._settings.AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=self._settings.AWS_SECRET_ACCESS_KEY,
             )
             
             # Titan Embeddings v2 supports flexible dimensions.

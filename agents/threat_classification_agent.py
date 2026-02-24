@@ -87,6 +87,8 @@ class ThreatClassificationAgent(BaseAgent):
             "patterns": patterns,
             "anomaly_score": anomaly_score,
             "similar_incidents": similar_incidents,
+            "raw_logs": data.get("raw_logs", []),
+            "log_summary": data.get("log_summary", ""),
         }
 
     def reason(self, analysis: dict[str, Any]) -> dict[str, Any]:
@@ -123,6 +125,8 @@ class ThreatClassificationAgent(BaseAgent):
             "confidence_score": round(best_score, 2),
             "matched_indicators": list(indicators),
             "similar_incidents": similar,
+            "raw_logs": analysis.get("raw_logs", []),
+            "log_summary": analysis.get("log_summary", ""),
         }
 
     def act(self, reasoning: dict[str, Any]) -> dict[str, Any]:
@@ -132,12 +136,34 @@ class ThreatClassificationAgent(BaseAgent):
         threat_type = reasoning["threat_type"]
         confidence = reasoning["confidence_score"]
 
+        # Build a richer prompt with all context
+        raw_logs = reasoning.get("raw_logs", [])
+        nova_prompt = json.dumps({
+            "heuristic_classification": {
+                "threat_type": threat_type,
+                "confidence_score": confidence,
+                "matched_indicators": reasoning.get("matched_indicators", []),
+            },
+            "log_summary": reasoning.get("log_summary", ""),
+            "raw_log_lines": raw_logs[:20],
+            "similar_incidents": reasoning.get("similar_incidents", [])[:3],
+        })
+
         # Get Nova-enhanced explanation
         try:
             nova_response = run_async(
                 self._nova.invoke(
-                    prompt=json.dumps(reasoning),
-                    system_prompt="You are a threat classification expert. Classify the threat and explain your reasoning.",
+                    prompt=nova_prompt,
+                    system_prompt=(
+                        "You are a threat classification expert. You receive heuristic classification results and similar past incidents. "
+                        "Analyze ALL the data and provide your own independent threat classification. "
+                        "If the heuristic says 'unknown' but the indicators suggest a known threat, override it. "
+                        "You MUST respond with ONLY valid JSON (no markdown, no explanation outside JSON). "
+                        "Use this exact schema: "
+                        '{"threat_type": "<brute_force|phishing|malware|data_exfiltration|privilege_escalation|unknown>", '
+                        '"confidence_score": <float 0-1>, "explanation": "<string>", '
+                        '"recommended_action": "<block_ip|disable_user|update_firewall|quarantine_system|flag_for_review>"}'
+                    ),
                     context="threat_classification",
                 )
             )

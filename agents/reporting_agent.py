@@ -95,7 +95,13 @@ class ReportingAgent(BaseAgent):
             nova_response = run_async(
                 self._nova.invoke(
                     prompt=json.dumps(reasoning),
-                    system_prompt="You are a cybersecurity report writer. Generate executive and technical reports.",
+                    system_prompt=(
+                        "You are a cybersecurity report writer. Generate executive and technical incident reports. "
+                        "You MUST respond with ONLY valid JSON (no markdown, no explanation outside JSON). "
+                        "Use this exact schema: "
+                        '{"executive_summary": "<string - concise executive summary paragraph>", '
+                        '"technical_report": "<string - detailed markdown-formatted technical forensic report>"}'
+                    ),
                     context="report_generation",
                 )
             )
@@ -251,11 +257,12 @@ class ReportingAgent(BaseAgent):
                     prompt=reasoning_prompt,
                     system_prompt=(
                         "You are a cybersecurity AI analyst. Write a concise "
-                        "'Nova AI Reasoning Summary' section that explains WHY "
+                        "'Nova AI Reasoning Summary' that explains WHY "
                         "the threat was classified as it was, what anomaly signals "
                         "influenced the decision, how confidence was determined, "
                         "and whether past incident similarity contributed. "
-                        "Write in third-person analytical tone. 3-5 sentences max."
+                        "You MUST respond with ONLY valid JSON (no markdown, no explanation outside JSON). "
+                        'Use this exact schema: {"reasoning_summary": "<string - 3-5 sentences in third-person analytical tone>"}'
                     ),
                     context="nova_reasoning_summary",
                 )

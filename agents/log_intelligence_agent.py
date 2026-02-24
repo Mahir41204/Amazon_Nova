@@ -36,10 +36,10 @@ class LogIntelligenceAgent(BaseAgent):
     # ── BaseAgent interface ─────────────────────────────────────────────
 
     def analyze(self, data: dict[str, Any]) -> dict[str, Any]:
-        """Parse raw logs and extract structured events."""
+        """Extract events from raw log lines."""
         raw_logs: list[str] = data.get("logs", [])
         if not raw_logs:
-            return {"events": [], "total": 0}
+            return {"events": [], "total": 0, "raw_logs": []}
 
         events = []
         for line in raw_logs:
@@ -51,6 +51,7 @@ class LogIntelligenceAgent(BaseAgent):
             "events": events,
             "total": len(events),
             "raw_count": len(raw_logs),
+            "raw_logs": raw_logs,
         }
 
     def reason(self, analysis: dict[str, Any]) -> dict[str, Any]:
@@ -61,6 +62,7 @@ class LogIntelligenceAgent(BaseAgent):
                 "anomaly_score": 0.0,
                 "suspicious_patterns": [],
                 "summary": "No events to analyze.",
+                "raw_logs": analysis.get("raw_logs", []),
             }
 
         patterns = []
@@ -97,18 +99,40 @@ class LogIntelligenceAgent(BaseAgent):
             "anomaly_score": round(anomaly_score, 2),
             "suspicious_patterns": patterns,
             "events_analyzed": len(events),
+            "raw_logs": analysis.get("raw_logs", []),
         }
 
     def act(self, reasoning: dict[str, Any]) -> dict[str, Any]:
         """Produce the final structured output with Nova-enhanced summary."""
         from core.async_utils import run_async
 
+        # Build prompt with raw logs so Nova can analyze independently
+        raw_logs = reasoning.get("raw_logs", [])
+        nova_prompt = json.dumps({
+            "heuristic_results": {
+                "anomaly_score": reasoning["anomaly_score"],
+                "suspicious_patterns": reasoning.get("suspicious_patterns", []),
+                "events_analyzed": reasoning.get("events_analyzed", 0),
+            },
+            "raw_log_lines": raw_logs[:50],  # Cap to avoid token overflow
+        })
+
         # Get Nova-enhanced analysis summary
         try:
             nova_response = run_async(
                 self._nova.invoke(
-                    prompt=json.dumps(reasoning),
-                    system_prompt="You are a cybersecurity log analyst. Analyze the patterns and provide a concise threat assessment.",
+                    prompt=nova_prompt,
+                    system_prompt=(
+                        "You are a cybersecurity log analyst. You are given raw log lines AND heuristic analysis results. "
+                        "Analyze the RAW LOG LINES independently — do NOT just echo the heuristic results. "
+                        "Detect threats like brute-force attacks, privilege escalation, data exfiltration, malware indicators, etc. "
+                        "Even a SINGLE 'Failed password' log is suspicious and should be flagged. "
+                        "You MUST respond with ONLY valid JSON (no markdown, no explanation outside JSON). "
+                        "Use this exact schema: "
+                        '{"anomaly_score": <float 0-1>, "suspicious_patterns": [{"pattern_type": "<string>", '
+                        '"description": "<string>", "severity": "<low|medium|high|critical>", "source_ip": "<string or null>"}], '
+                        '"summary": "<string>", "events_analyzed": <int>}'
+                    ),
                     context="log_analysis",
                 )
             )
@@ -118,9 +142,9 @@ class LogIntelligenceAgent(BaseAgent):
 
         return {
             "anomaly_score": nova_data.get("anomaly_score", reasoning["anomaly_score"]),
-            "suspicious_patterns": nova_data.get("suspicious_patterns", reasoning["suspicious_patterns"]),
+            "suspicious_patterns": nova_data.get("suspicious_patterns", reasoning.get("suspicious_patterns", [])),
             "summary": nova_data.get("summary", self._generate_summary(reasoning)),
-            "events_analyzed": reasoning["events_analyzed"],
+            "events_analyzed": reasoning.get("events_analyzed", 0),
         }
 
     # ── Pattern detection heuristics ────────────────────────────────────
