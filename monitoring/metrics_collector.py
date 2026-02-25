@@ -46,6 +46,19 @@ class DaemonMetrics:
     ip_tracker: dict[str, Any] = field(default_factory=dict)
 
 
+# ── Global Instance ──────────────────────────────────────────────────
+
+_metrics: MetricsCollector | None = None
+
+
+def get_global_metrics() -> MetricsCollector:
+    """Get or create the global MetricsCollector instance (singleton)."""
+    global _metrics
+    if _metrics is None:
+        _metrics = MetricsCollector()
+    return _metrics
+
+
 class MetricsCollector:
     """Centralized metrics collection for the Nova Sentinel daemon.
 

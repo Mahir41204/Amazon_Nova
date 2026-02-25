@@ -123,10 +123,10 @@ class LogIntelligenceAgent(BaseAgent):
                 self._nova.invoke(
                     prompt=nova_prompt,
                     system_prompt=(
-                        "You are a cybersecurity log analyst. You are given raw log lines AND heuristic analysis results. "
-                        "Analyze the RAW LOG LINES independently — do NOT just echo the heuristic results. "
-                        "Detect threats like brute-force attacks, privilege escalation, data exfiltration, malware indicators, etc. "
-                        "Even a SINGLE 'Failed password' log is suspicious and should be flagged. "
+                        "You are a system behavioral analyst. You are given raw log lines AND heuristic analysis results. "
+                        "Analyze the RAW LOG LINES independently for anomalous patterns. "
+                        "Identify occurrences of high-frequency access attempts, privilege transitions, and unusual egress. "
+                        "Provide an objective, technical assessment of the system activity. "
                         "You MUST respond with ONLY valid JSON (no markdown, no explanation outside JSON). "
                         "Use this exact schema: "
                         '{"anomaly_score": <float 0-1>, "suspicious_patterns": [{"pattern_type": "<string>", '
@@ -160,10 +160,10 @@ class LogIntelligenceAgent(BaseAgent):
         for ip, attempts in failed_logins.items():
             if len(attempts) >= 5:
                 return {
-                    "pattern_type": "brute_force",
+                    "pattern_type": "high_frequency_access",
                     "description": (
-                        f"{len(attempts)} failed login attempts from {ip} "
-                        f"targeting user(s): {', '.join(set(a.get('user', '?') for a in attempts))}"
+                        f"{len(attempts)} failed access attempts from {ip} "
+                        f"targeting identity(ies): {', '.join(set(a.get('user', '?') for a in attempts))}"
                     ),
                     "severity": "high" if len(attempts) >= 10 else "medium",
                     "source_ip": ip,
@@ -187,12 +187,12 @@ class LogIntelligenceAgent(BaseAgent):
         """Detect privilege escalation attempts."""
         for e in events:
             action = e.get("action", "").lower()
-            if any(kw in action for kw in ["sudo", "su_root", "privilege_escalation", "root_access"]):
+            if any(kw in action for kw in ["sudo", "su_root", "privilege_elevation", "root_access"]):
                 return {
-                    "pattern_type": "privilege_escalation",
+                    "pattern_type": "privilege_transition",
                     "description": (
-                        f"User '{e.get('user', 'unknown')}' escalated privileges "
-                        f"via {e.get('action')} on {e.get('target', 'unknown')}"
+                        f"Identity '{e.get('user', 'unknown')}' transitioned privileges "
+                        f"via {e.get('action')} on resource {e.get('target', 'unknown')}"
                     ),
                     "severity": "critical",
                     "user": e.get("user"),

@@ -48,7 +48,7 @@ from events.telemetry_event import TelemetryEvent
 from memory.incident_repository import IncidentRepository
 from core.state_manager import StateManager
 from memory.vector_store import VectorStore
-from monitoring.metrics_collector import MetricsCollector
+from monitoring.metrics_collector import get_global_metrics
 from monitoring.realtime_trace_dashboard import RealtimeTraceDashboard
 from realtime.correlation_engine import CorrelationEngine
 from realtime.suspicion_engine import SuspicionEngine
@@ -89,7 +89,7 @@ class RealtimeDaemon:
             base_threshold=getattr(self._settings, "GLOBAL_SUSPICION_THRESHOLD", 0.85),
         )
         self._firewall = SandboxFirewall()
-        self._metrics = MetricsCollector()
+        self._metrics = get_global_metrics()
         self._dashboard = RealtimeTraceDashboard()
         self._worker_pool = WorkerPool(size=4, name="event-processors")
 

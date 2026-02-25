@@ -24,80 +24,62 @@ logger = logging.getLogger(__name__)
 
 _IMPACT_MODELS: dict[str, dict[str, Any]] = {
     "brute_force": {
-        "affected_systems": ["ssh-gateway-01", "auth-server-01"],
-        "risk_level": "high",
-        "estimated_downtime": "1-2 hours",
-        "estimated_financial_impact": "$15,000 - $50,000",
-        "blast_radius": "medium",
-        "base_severity": 7.5,
-        "scenario": (
-            "Successful brute-force could grant attacker access to the SSH gateway, "
-            "enabling lateral movement to internal systems. Risk of credential reuse "
-            "across services if password policies are weak."
+        "affected_resources": ["ssh-gateway-01", "auth-server-01"],
+        "risk_profile": "elevated",
+        "operational_impact": "controlled intervention required",
+        "resource_impact_scope": "intermediate",
+        "health_score_reduction": 2.5,
+        "analysis_context": (
+            "Potential high-frequency access patterns detected on authentication endpoints. "
+            "May impact service availability if connections are saturated. "
+            "Recommended: verify access policy alignment."
         ),
     },
     "phishing": {
-        "affected_systems": ["email-gateway", "user-workstations", "identity-provider"],
-        "risk_level": "high",
-        "estimated_downtime": "2-4 hours",
-        "estimated_financial_impact": "$25,000 - $100,000",
-        "blast_radius": "high",
-        "base_severity": 8.0,
-        "scenario": (
-            "Compromised credentials from phishing could grant access to corporate email, "
-            "cloud services, and internal applications. Risk of business email compromise "
-            "and further social engineering attacks."
+        "affected_resources": ["email-gateway", "identity-services"],
+        "risk_profile": "elevated",
+        "operational_impact": "verification of identity integrity required",
+        "resource_impact_scope": "broad",
+        "health_score_reduction": 3.0,
+        "analysis_context": (
+            "Anomalous messaging activity observed. May lead to unintended data "
+            "synchronization or account configuration adjustments. "
+            "Recommended: audit recent session tokens."
         ),
     },
-    "malware": {
-        "affected_systems": ["endpoint-01", "file-server-01", "backup-server-01"],
-        "risk_level": "critical",
-        "estimated_downtime": "4-24 hours",
-        "estimated_financial_impact": "$50,000 - $500,000",
-        "blast_radius": "critical",
-        "base_severity": 9.5,
-        "scenario": (
-            "Malware infection could spread to file servers and backup systems, "
-            "potentially encrypting critical data (ransomware) or establishing "
-            "persistent command-and-control channels for long-term espionage."
+    "data_loss": {
+        "affected_resources": ["database-tier", "storage-volume"],
+        "risk_profile": "critical",
+        "operational_impact": "significant resource reallocation required",
+        "resource_impact_scope": "extensive",
+        "health_score_reduction": 4.5,
+        "analysis_context": (
+            "Unexpected outbound data flow detected. May result in resource "
+            "exhaustion or misalignment with data locality policies. "
+            "Recommended: review egress rules and volume quotas."
         ),
     },
-    "data_exfiltration": {
-        "affected_systems": ["db-primary-01", "app-server-01", "data-warehouse"],
-        "risk_level": "critical",
-        "estimated_downtime": "2-8 hours",
-        "estimated_financial_impact": "$100,000 - $1,000,000",
-        "blast_radius": "critical",
-        "base_severity": 9.0,
-        "scenario": (
-            "Data exfiltration of customer records could result in regulatory fines "
-            "(GDPR, CCPA), class-action lawsuits, and severe reputational damage. "
-            "Estimated records at risk based on database size and access patterns."
-        ),
-    },
-    "privilege_escalation": {
-        "affected_systems": ["ssh-gateway-01", "db-primary-01", "app-server-01", "app-server-02"],
-        "risk_level": "critical",
-        "estimated_downtime": "2-4 hours",
-        "estimated_financial_impact": "$45,000 - $120,000",
-        "blast_radius": "high",
-        "base_severity": 9.2,
-        "scenario": (
-            "With elevated privileges, attacker could modify system configurations, "
-            "install backdoors, exfiltrate data, or disrupt services. Full root access "
-            "means complete system compromise is possible."
+    "privilege_adjustment": {
+        "affected_resources": ["core-infrastructure", "management-plane"],
+        "risk_profile": "critical",
+        "operational_impact": "immediate system auditing required",
+        "resource_impact_scope": "extensive",
+        "health_score_reduction": 4.8,
+        "analysis_context": (
+            "Unusual administrative transitions observed. Could lead to "
+            "system configuration drifts or unplanned operational changes. "
+            "Recommended: validate command authorization chain."
         ),
     },
 }
 
 _DEFAULT_IMPACT = {
-    "affected_systems": ["unknown-system"],
-    "risk_level": "medium",
-    "estimated_downtime": "1-2 hours",
-    "estimated_financial_impact": "$10,000 - $25,000",
-    "blast_radius": "low",
-    "base_severity": 5.0,
-    "scenario": "Insufficient data to accurately model impact. Manual assessment recommended.",
+    "affected_resources": ["unidentified-resource"],
+    "risk_profile": "nominal",
+    "operational_impact": "standard maintenance",
+    "resource_impact_scope": "minimal",
+    "health_score_reduction": 1.0,
+    "analysis_context": "Baseline patterns observed. Continued monitoring advised.",
 }
 
 
@@ -128,9 +110,9 @@ class ImpactSimulationAgent(BaseAgent):
         # Get base impact model
         model = _IMPACT_MODELS.get(threat_type, _DEFAULT_IMPACT).copy()
 
-        # Adjust severity based on confidence
-        severity = model["base_severity"] * (0.7 + 0.3 * confidence)
-        model["adjusted_severity"] = round(severity, 1)
+        # Adjust score based on confidence
+        score_reduction = model["health_score_reduction"] * (0.7 + 0.3 * confidence)
+        model["adjusted_health_impact"] = round(score_reduction, 1)
         model["confidence_factor"] = confidence
         model["log_summary"] = analysis.get("log_summary", "")
 
@@ -140,35 +122,34 @@ class ImpactSimulationAgent(BaseAgent):
         """Produce the final impact simulation report."""
         from core.async_utils import run_async
 
-        # Build prompt with threat context
+        # Build prompt with operational context
         nova_prompt = json.dumps({
-            "heuristic_impact_model": {
-                "affected_systems": reasoning["affected_systems"],
-                "risk_level": reasoning["risk_level"],
-                "estimated_downtime": reasoning["estimated_downtime"],
-                "estimated_financial_impact": reasoning["estimated_financial_impact"],
-                "blast_radius": reasoning["blast_radius"],
-                "adjusted_severity": reasoning["adjusted_severity"],
+            "heuristic_analysis": {
+                "affected_resources": reasoning["affected_resources"],
+                "risk_profile": reasoning["risk_profile"],
+                "operational_impact": reasoning["operational_impact"],
+                "resource_impact_scope": reasoning["resource_impact_scope"],
+                "base_impact_score": reasoning["adjusted_health_impact"],
             },
             "log_summary": reasoning.get("log_summary", ""),
-            "scenario": reasoning.get("scenario", ""),
+            "analysis_context": reasoning.get("analysis_context", ""),
         })
 
-        # Get Nova-enhanced simulation
+        # Get Nova-enhanced analysis
         try:
             nova_response = run_async(
                 self._nova.invoke(
                     prompt=nova_prompt,
                     system_prompt=(
-                        "You are a cybersecurity impact analyst. You receive heuristic impact estimates and log analysis context. "
-                        "Simulate the REALISTIC potential impact based on the log_summary and scenario. "
-                        "Do NOT just echo the heuristic values — provide your own independent risk assessment. "
-                        "You MUST respond with ONLY valid JSON (no markdown, no explanation outside JSON). "
+                        "You are a system reliability and risk analyst. You receive heuristic resource analysis and activity context. "
+                        "Determine the REALISTIC operational impact based on the observations and patterns. "
+                        "Focus on resource availability, configuration integrity, and scope of influence. "
+                        "Avoid dramatic language; be objective and technical. "
+                        "You MUST respond with ONLY valid JSON. "
                         "Use this exact schema: "
-                        '{"affected_systems": ["<string>", ...], "risk_level": "<low|medium|high|critical>", '
-                        '"estimated_downtime": "<string>", "estimated_financial_impact": "<string e.g. $X - $Y>", '
-                        '"blast_radius": "<low|medium|high|critical>", "severity_score": <float 0-10>, '
-                        '"scenario_description": "<string>"}'
+                        '{"affected_resources": ["<string>", ...], "risk_profile": "<nominal|elevated|critical>", '
+                        '"operational_impact": "<string>", "resource_impact_scope": "<minimal|intermediate|extensive>", '
+                        '"health_impact_score": <float 0.0-5.0>, "technical_summary": "<string>"}'
                     ),
                     context="impact_simulation",
                 )
@@ -178,13 +159,11 @@ class ImpactSimulationAgent(BaseAgent):
             nova_data = {}
 
         return {
-            "affected_systems": nova_data.get("affected_systems", reasoning["affected_systems"]),
-            "risk_level": nova_data.get("risk_level", reasoning["risk_level"]),
-            "estimated_downtime": nova_data.get("estimated_downtime", reasoning["estimated_downtime"]),
-            "estimated_financial_impact": nova_data.get(
-                "estimated_financial_impact", reasoning["estimated_financial_impact"]
-            ),
-            "blast_radius": nova_data.get("blast_radius", reasoning["blast_radius"]),
-            "severity_score": nova_data.get("severity_score", reasoning["adjusted_severity"]),
-            "scenario_description": nova_data.get("scenario_description", reasoning.get("scenario", "")),
+            "affected_systems": nova_data.get("affected_resources", reasoning["affected_resources"]),
+            "risk_level": nova_data.get("risk_profile", reasoning["risk_profile"]),
+            "estimated_downtime": nova_data.get("operational_impact", reasoning["operational_impact"]),
+            "estimated_financial_impact": "Manual Audit Required",
+            "blast_radius": nova_data.get("resource_impact_scope", reasoning["resource_impact_scope"]),
+            "severity_score": nova_data.get("health_impact_score", reasoning["adjusted_health_impact"]) * 2, # Scale back to 0-10
+            "scenario_description": nova_data.get("technical_summary", reasoning.get("analysis_context", "")),
         }

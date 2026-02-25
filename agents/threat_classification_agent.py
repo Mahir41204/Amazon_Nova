@@ -21,39 +21,39 @@ logger = logging.getLogger(__name__)
 # ── Classification rules (heuristic baseline) ──────────────────────────
 
 _THREAT_SIGNATURES: dict[str, dict[str, Any]] = {
-    "brute_force": {
-        "indicators": ["login_failed", "brute_force", "failed_password", "authentication_failure"],
+    "high_frequency_auth": {
+        "indicators": ["login_failed", "access_pattern", "failed_password", "authentication_failure"],
         "base_confidence": 0.80,
-        "description": "Repeated authentication failures indicating automated credential guessing",
+        "description": "Repeated authentication failures indicating automated access attempts",
     },
-    "phishing": {
-        "indicators": ["phishing", "suspicious_url", "malicious_link", "credential_harvest"],
+    "anomalous_messaging": {
+        "indicators": ["suspicious_url", "messaging_pattern", "delivery_anomaly", "credential_sync"],
         "base_confidence": 0.70,
-        "description": "Deceptive attempt to obtain sensitive information",
+        "description": "Unusual messaging interaction with potential for unintended data synchronization",
     },
-    "malware": {
-        "indicators": ["malware", "trojan", "ransomware", "suspicious_process", "c2_beacon"],
+    "payload_execution": {
+        "indicators": ["execution_pattern", "runtime_anomaly", "process_drift", "c2_pattern"],
         "base_confidence": 0.75,
-        "description": "Malicious software detected or suspected",
+        "description": "Detection of unauthorized or unexpected computational processes",
     },
-    "data_exfiltration": {
-        "indicators": ["exfiltration", "large_transfer", "database_dump", "data_export", "unusual_egress"],
+    "egress_anomaly": {
+        "indicators": ["data_egress", "large_transfer", "volume_spike", "outbound_drift", "unusual_egress"],
         "base_confidence": 0.72,
-        "description": "Unauthorized data transfer or extraction attempt",
+        "description": "Unplanned or substantial outbound data movement patterns",
     },
-    "privilege_escalation": {
-        "indicators": ["privilege_escalation", "sudo", "su_root", "root_access", "admin_elevation"],
+    "privilege_transition": {
+        "indicators": ["privilege_shift", "elevation_pattern", "sudo_pattern", "root_transition", "administrative_elevation"],
         "base_confidence": 0.78,
-        "description": "Unauthorized elevation of system privileges",
+        "description": "Observations of significant transitions in process authorization levels",
     },
 }
 
 _RECOMMENDED_ACTIONS: dict[str, str] = {
-    "brute_force": "block_ip",
-    "phishing": "disable_user",
-    "malware": "quarantine_system",
-    "data_exfiltration": "update_firewall",
-    "privilege_escalation": "disable_user",
+    "high_frequency_auth": "block_ip",
+    "anomalous_messaging": "disable_user",
+    "payload_execution": "quarantine_system",
+    "egress_anomaly": "update_firewall",
+    "privilege_transition": "disable_user",
     "unknown": "flag_for_review",
 }
 
@@ -155,12 +155,12 @@ class ThreatClassificationAgent(BaseAgent):
                 self._nova.invoke(
                     prompt=nova_prompt,
                     system_prompt=(
-                        "You are a threat classification expert. You receive heuristic classification results and similar past incidents. "
-                        "Analyze ALL the data and provide your own independent threat classification. "
-                        "If the heuristic says 'unknown' but the indicators suggest a known threat, override it. "
-                        "You MUST respond with ONLY valid JSON (no markdown, no explanation outside JSON). "
+                        "You are a behavioral patterns expert. You receive heuristic classification results and similar operational patterns. "
+                        "Analyze the telemetry and provide an objective classification of the activity pattern. "
+                        "Focus on the technical behavior rather than dramatic intent. "
+                        "You MUST respond with ONLY valid JSON. "
                         "Use this exact schema: "
-                        '{"threat_type": "<brute_force|phishing|malware|data_exfiltration|privilege_escalation|unknown>", '
+                        '{"threat_type": "<high_frequency_auth|anomalous_messaging|payload_execution|egress_anomaly|privilege_transition|unknown>", '
                         '"confidence_score": <float 0-1>, "explanation": "<string>", '
                         '"recommended_action": "<block_ip|disable_user|update_firewall|quarantine_system|flag_for_review>"}'
                     ),

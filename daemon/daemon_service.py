@@ -38,7 +38,7 @@ from events.event_queue import EventQueue
 from events.log_streamer import LogStreamer
 from memory.incident_repository import IncidentRepository
 from memory.vector_store import VectorStore
-from monitoring.metrics_collector import MetricsCollector
+from monitoring.metrics_collector import get_global_metrics
 from realtime.ip_state_tracker import IPStateTracker
 from realtime.sliding_window_engine import SlidingWindowEngine
 from realtime.threshold_engine import ThresholdEngine
@@ -89,7 +89,7 @@ class NovaSentinelDaemon:
         self._block_manager = BlockManager(self._firewall)
 
         # ── Monitoring ──────────────────────────────────────────────────
-        self._metrics = MetricsCollector()
+        self._metrics = get_global_metrics()
         self._trace = TraceRenderer()
 
         # ── Workers ─────────────────────────────────────────────────────

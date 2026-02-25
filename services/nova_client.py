@@ -167,6 +167,10 @@ class NovaClient:
 
         elapsed_ms = round((time.perf_counter() - start) * 1000, 2)
 
+        # Record metrics globally
+        from monitoring.metrics_collector import get_global_metrics
+        get_global_metrics().record_nova_activation(latency_ms=elapsed_ms)
+
         self._log_reasoning(
             context=context,
             prompt=prompt,

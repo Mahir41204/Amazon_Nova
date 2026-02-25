@@ -84031,5 +84031,967 @@
         "decision": "Pipeline completed in 12290.89ms"
       }
     ]
+  },
+  "ac5c798c-15c4-462c-b886-f7f6a387dea5": {
+    "incident_id": "ac5c798c-15c4-462c-b886-f7f6a387dea5",
+    "status": "completed",
+    "created_at": "2026-02-24T18:11:08.602348+00:00",
+    "updated_at": "2026-02-24T18:11:24.625962+00:00",
+    "raw_input_summary": "7 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.7,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "high_frequency_access",
+              "description": "Multiple failed SSH login attempts from the same source IP targeting various privileged accounts.",
+              "severity": "high",
+              "source_ip": "10.99.88.77"
+            }
+          ],
+          "summary": "Analysis of raw log lines revealed a series of failed SSH login attempts from a single IP address targeting multiple privileged accounts, indicating a potential brute force attack.",
+          "events_analyzed": 7
+        },
+        "execution_time_ms": 2948.53
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "high_frequency_auth",
+          "confidence_score": 0.85,
+          "explanation": "The log summary and raw log lines indicate multiple failed SSH login attempts from a single IP address targeting various privileged accounts. This pattern is consistent with a brute force attack, which is a type of high-frequency authentication attempt.",
+          "recommended_action": "block_ip",
+          "similar_incidents": [
+            {
+              "incident_id": "585d882d-6045-4c85-be25-dd87f5a1c55f",
+              "similarity_score": 0.7526,
+              "threat_type": "brute_force",
+              "confidence_score": 0.68,
+              "anomaly_score": 0.8,
+              "summary": "A failed password attempt for the root user was detected via SSH from IP 10.99.88.77. This could indicate a brute-force attack or unauthorized access attempt."
+            },
+            {
+              "incident_id": "96a7bf34-f009-4b58-9fa1-c49dd32b0b7b",
+              "similarity_score": 0.7461,
+              "threat_type": "brute_force",
+              "confidence_score": 0.68,
+              "anomaly_score": 0.8,
+              "summary": "A failed password attempt for the root user via SSH was detected, indicating a potential brute-force attack or unauthorized access attempt."
+            },
+            {
+              "incident_id": "70f00733-f4a0-47ae-af5d-0ed91c3bf511",
+              "similarity_score": 0.7246,
+              "threat_type": "brute_force",
+              "confidence_score": 0.9,
+              "anomaly_score": 0.8,
+              "summary": "Detected multiple failed login attempts from a single IP address targeting several high-privilege accounts, indicative of a brute-force attack."
+            },
+            {
+              "incident_id": "fca827ac-22ee-4c7a-a6e5-223533329565",
+              "similarity_score": 0.7141,
+              "threat_type": "brute_force",
+              "confidence_score": 0.68,
+              "anomaly_score": 0.7,
+              "summary": "Multiple failed login attempts and an invalid user attempt from the same source IP indicate potential brute-force attack."
+            },
+            {
+              "incident_id": "e17603ba-861c-4969-a574-a2efb895d275",
+              "similarity_score": 0.5612,
+              "threat_type": "brute_force",
+              "confidence_score": 0.68,
+              "anomaly_score": 0.6,
+              "summary": "Detected 1 suspicious pattern(s):\n  - [MEDIUM] brute_force: 5 failed login attempts from 10.99.88.77 targeting user(s): admin, root, ubuntu"
+            }
+          ]
+        },
+        "execution_time_ms": 1539.89
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "unidentified-resource"
+          ],
+          "risk_level": "elevated",
+          "estimated_downtime": "Increased security monitoring and potential temporary lockout of targeted accounts",
+          "estimated_financial_impact": "Manual Audit Required",
+          "blast_radius": "intermediate",
+          "severity_score": 5.0,
+          "scenario_description": "The log analysis indicates a series of failed SSH login attempts from a single IP address targeting multiple privileged accounts, suggesting a potential brute force attack. While the initial risk profile was nominal, the observed pattern elevates the risk. Operational impact includes increased security monitoring and possible temporary account lockouts to mitigate the threat. The scope of impact is intermediate as it involves multiple accounts and requires additional security measures."
+        },
+        "execution_time_ms": 2576.34
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.85,
+          "threshold": 0.85,
+          "actions_taken": [
+            {
+              "action_type": "block_ip",
+              "target": "10.99.88.77",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-24T18:11:16.507575+00:00",
+              "details": {
+                "warning": "Nova Act SDK missing, falling back to simulation",
+                "action": "block_ip"
+              },
+              "execution_time_ms": 1.55
+            }
+          ],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "10.99.88.77",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-24T18:11:16.507575+00:00",
+              "details": {
+                "warning": "Nova Act SDK missing, falling back to simulation",
+                "action": "block_ip"
+              },
+              "execution_time_ms": 1.55
+            }
+          ]
+        },
+        "execution_time_ms": 9.24
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "## High Frequency Auth Attack Mitigated\n\nA system activity pattern has been automatically optimized.\n\n**Risk Level:** ELEVATED\n**Potential Financial Impact:** Manual Audit Required\n**Automated Actions Taken:** 1\n**Actions Pending Review:** 0\n\n**Analysis:** The log summary and raw log lines indicate multiple failed SSH login attempts from a single IP address targeting various privileged accounts. This pattern is consistent with a brute force attack, which is a type of high-frequency authentication attempt.",
+          "technical_report": "# System Activity Report \u2014 Identifier ac5c798c-15c4-462c-b886-f7f6a387dea5\n\n**Timestamp:** 2026-02-24T18:11:16.516384+00:00\n**Activity Type:** high_frequency_auth\n**Confidence:** 0.85\n**Anomaly Score:** 0.7\n**Severity Score:** 5.0\n\n## Patterns Detected\n- **[HIGH]** high_frequency_access: Multiple failed SSH login attempts from the same source IP targeting various privileged accounts.\n\n## Affected Systems\n- unidentified-resource\n\n## Actions Taken\n- **block_ip** \u2192 10.99.88.77 (\u2705 Success, simulated)\n\n## Impact Scenario\nThe log analysis indicates a series of failed SSH login attempts from a single IP address targeting multiple privileged accounts, suggesting a potential brute force attack. While the initial risk profile was nominal, the observed pattern elevates the risk. Operational impact includes increased security monitoring and possible temporary account lockouts to mitigate the threat. The scope of impact is intermediate as it involves multiple accounts and requires additional security measures.",
+          "prevention_recommendations": [
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "- The generated text has been blocked by our content filters.",
+          "metadata": {
+            "generated_at": "2026-02-24T18:11:23.634281+00:00",
+            "incident_id": "ac5c798c-15c4-462c-b886-f7f6a387dea5"
+          }
+        },
+        "execution_time_ms": 7118.35
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-24T18:11:08.602864+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:08.602864+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:12.381135+00:00",
+        "decision": "Found 5 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:12.381135+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:13.923107+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:16.502402+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:16.515409+00:00",
+        "decision": "Confidence 85.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:16.515874+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:24.625962+00:00",
+        "decision": "Pipeline completed in 16023.96ms"
+      }
+    ]
+  },
+  "8f4c8a0d-75ef-4b21-ab65-2bd49d577249": {
+    "incident_id": "8f4c8a0d-75ef-4b21-ab65-2bd49d577249",
+    "status": "completed",
+    "created_at": "2026-02-24T18:11:26.837016+00:00",
+    "updated_at": "2026-02-24T18:11:43.766759+00:00",
+    "raw_input_summary": "4 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.95,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "privilege_transition",
+              "description": "Identity 'user1' transitioned privileges via sudo on resource /bin/bash",
+              "severity": "critical",
+              "source_ip": null
+            },
+            {
+              "pattern_type": "suspicious_module_load",
+              "description": "Kernel loaded a suspicious module 'rootkit.ko'",
+              "severity": "critical",
+              "source_ip": null
+            },
+            {
+              "pattern_type": "failed_privilege_transition",
+              "description": "Failed 'su' attempt for root by 'user1'",
+              "severity": "medium",
+              "source_ip": null
+            },
+            {
+              "pattern_type": "unauthorized_access",
+              "description": "'user1' attempted to access /etc/shadow but was denied",
+              "severity": "high",
+              "source_ip": null
+            }
+          ],
+          "summary": "Multiple critical and high severity suspicious activities detected, including privilege transitions, loading of a suspicious kernel module, failed privilege escalation attempts, and unauthorized access attempts.",
+          "events_analyzed": 4
+        },
+        "execution_time_ms": 2439.4
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "privilege_transition",
+          "confidence_score": 0.95,
+          "explanation": "The activity pattern involves multiple failed and attempted privilege transitions, loading of a suspicious kernel module, and unauthorized access attempts. The user 'user1' attempted to escalate privileges to root, loaded a suspicious kernel module 'rootkit.ko', and tried to access sensitive files like '/etc/shadow'. These actions are indicative of a privilege transition threat.",
+          "recommended_action": "flag_for_review",
+          "similar_incidents": [
+            {
+              "incident_id": "78aeb5e7-668b-419f-a2b2-0dae3745383f",
+              "similarity_score": 0.6577,
+              "threat_type": "privilege_escalation",
+              "confidence_score": 0.95,
+              "anomaly_score": 0.95,
+              "summary": "Multiple critical and medium severity suspicious activities detected involving user 'user1'. These include a successful privilege escalation via sudo, loading of a suspicious kernel module, a failed s"
+            },
+            {
+              "incident_id": "96a7bf34-f009-4b58-9fa1-c49dd32b0b7b",
+              "similarity_score": 0.4455,
+              "threat_type": "brute_force",
+              "confidence_score": 0.68,
+              "anomaly_score": 0.8,
+              "summary": "A failed password attempt for the root user via SSH was detected, indicating a potential brute-force attack or unauthorized access attempt."
+            },
+            {
+              "incident_id": "e17603ba-861c-4969-a574-a2efb895d275",
+              "similarity_score": 0.4276,
+              "threat_type": "brute_force",
+              "confidence_score": 0.68,
+              "anomaly_score": 0.6,
+              "summary": "Detected 1 suspicious pattern(s):\n  - [MEDIUM] brute_force: 5 failed login attempts from 10.99.88.77 targeting user(s): admin, root, ubuntu"
+            },
+            {
+              "incident_id": "585d882d-6045-4c85-be25-dd87f5a1c55f",
+              "similarity_score": 0.4245,
+              "threat_type": "brute_force",
+              "confidence_score": 0.68,
+              "anomaly_score": 0.8,
+              "summary": "A failed password attempt for the root user was detected via SSH from IP 10.99.88.77. This could indicate a brute-force attack or unauthorized access attempt."
+            },
+            {
+              "incident_id": "ac5c798c-15c4-462c-b886-f7f6a387dea5",
+              "similarity_score": 0.4053,
+              "threat_type": "high_frequency_auth",
+              "confidence_score": 0.85,
+              "anomaly_score": 0.7,
+              "summary": "Analysis of raw log lines revealed a series of failed SSH login attempts from a single IP address targeting multiple privileged accounts, indicating a potential brute force attack."
+            }
+          ]
+        },
+        "execution_time_ms": 1887.39
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "unidentified-resource"
+          ],
+          "risk_level": "elevated",
+          "estimated_downtime": "Increased monitoring and potential security incident response required due to suspicious activities.",
+          "estimated_financial_impact": "Manual Audit Required",
+          "blast_radius": "intermediate",
+          "severity_score": 7.0,
+          "scenario_description": "The detection of multiple critical and high severity suspicious activities, such as privilege transitions, loading of a suspicious kernel module, failed privilege escalation attempts, and unauthorized access attempts, indicates a higher risk profile. Although the initial heuristic analysis suggested minimal impact, the log summary reveals a need for increased monitoring and possible security incident response. The resource impact scope is intermediate as it may affect system security and require additional measures to mitigate risks."
+        },
+        "execution_time_ms": 2661.35
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.95,
+          "threshold": 0.85,
+          "actions_taken": [],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "10.99.88.77",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-24T18:11:16.507575+00:00",
+              "details": {
+                "warning": "Nova Act SDK missing, falling back to simulation",
+                "action": "block_ip"
+              },
+              "execution_time_ms": 1.55
+            }
+          ]
+        },
+        "execution_time_ms": 0.23
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "## Privilege Transition Attack Mitigated\n\nA system activity pattern has been automatically optimized.\n\n**Risk Level:** ELEVATED\n**Potential Financial Impact:** Manual Audit Required\n**Automated Actions Taken:** 0\n**Actions Pending Review:** 0\n\n**Analysis:** The activity pattern involves multiple failed and attempted privilege transitions, loading of a suspicious kernel module, and unauthorized access attempts. The user 'user1' attempted to escalate privileges to root, loaded a suspicious kernel module 'rootkit.ko', and tried to access sensitive files like '/etc/shadow'. These actions are indicative of a privilege transition threat.",
+          "technical_report": "# System Activity Report \u2014 Identifier 8f4c8a0d-75ef-4b21-ab65-2bd49d577249\n\n**Timestamp:** 2026-02-24T18:11:34.697863+00:00\n**Activity Type:** privilege_transition\n**Confidence:** 0.95\n**Anomaly Score:** 0.95\n**Severity Score:** 7.0\n\n## Patterns Detected\n- **[CRITICAL]** privilege_transition: Identity 'user1' transitioned privileges via sudo on resource /bin/bash\n- **[CRITICAL]** suspicious_module_load: Kernel loaded a suspicious module 'rootkit.ko'\n- **[MEDIUM]** failed_privilege_transition: Failed 'su' attempt for root by 'user1'\n- **[HIGH]** unauthorized_access: 'user1' attempted to access /etc/shadow but was denied\n\n## Affected Systems\n- unidentified-resource\n\n## Actions Taken\n\n## Impact Scenario\nThe detection of multiple critical and high severity suspicious activities, such as privilege transitions, loading of a suspicious kernel module, failed privilege escalation attempts, and unauthorized access attempts, indicates a higher risk profile. Although the initial heuristic analysis suggested minimal impact, the log summary reveals a need for increased monitoring and possible security incident response. The resource impact scope is intermediate as it may affect system security and require additional measures to mitigate risks.",
+          "prevention_recommendations": [
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "The pattern was classified as a 'privilege_transition' threat due to the detection of multiple critical severity patterns including attempted and failed privilege transitions, loading of a suspicious kernel module, and unauthorized access attempts. The high anomaly and confidence scores of 0.95 were influenced by the severity and nature of these behavioral signals. Historical pattern similarity contributed to the classification, with five similar incidents identified, though their lower scores indicate varying degrees of resemblance.",
+          "metadata": {
+            "generated_at": "2026-02-24T18:11:42.783707+00:00",
+            "incident_id": "8f4c8a0d-75ef-4b21-ab65-2bd49d577249"
+          }
+        },
+        "execution_time_ms": 8085.7
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-24T18:11:26.837016+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:26.838533+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:30.143327+00:00",
+        "decision": "Found 5 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:30.143854+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:32.033829+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:34.696659+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:34.697863+00:00",
+        "decision": "Confidence 95.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:34.697863+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:43.766759+00:00",
+        "decision": "Pipeline completed in 16929.83ms"
+      }
+    ]
+  },
+  "be4e0dfa-3552-40a2-8b9c-59f9895c132d": {
+    "incident_id": "be4e0dfa-3552-40a2-8b9c-59f9895c132d",
+    "status": "completed",
+    "created_at": "2026-02-24T18:11:45.995642+00:00",
+    "updated_at": "2026-02-24T18:12:02.164512+00:00",
+    "raw_input_summary": "3 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.6,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "high_frequency_access",
+              "description": "Multiple rsync processes running in quick succession",
+              "severity": "medium",
+              "source_ip": null
+            },
+            {
+              "pattern_type": "privilege_transition",
+              "description": "Transfer of sensitive file /etc/passwd to external IP",
+              "severity": "high",
+              "source_ip": "185.220.101.5"
+            },
+            {
+              "pattern_type": "unusual_egress",
+              "description": "Outbound connection to known Command and Control server",
+              "severity": "critical",
+              "source_ip": "198.51.100.23"
+            }
+          ],
+          "summary": "The log lines indicate multiple rsync processes, transfer of sensitive files to an external IP, and an outbound connection to a known C2 server, suggesting potential malicious activity.",
+          "events_analyzed": 3
+        },
+        "execution_time_ms": 3033.23
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "egress_anomaly",
+          "confidence_score": 0.75,
+          "explanation": "The log lines indicate multiple rsync processes transferring sensitive files to external IPs, including a known C2 server. This suggests potential data exfiltration and command and control activity.",
+          "recommended_action": "block_ip",
+          "similar_incidents": [
+            {
+              "incident_id": "a2bedd69-4d27-4819-9d5d-2b3870d39539",
+              "similarity_score": 0.4211,
+              "threat_type": "unknown",
+              "confidence_score": 0.04,
+              "anomaly_score": 0.8,
+              "summary": "Multiple indicators of data exfiltration and potential command and control activity detected."
+            },
+            {
+              "incident_id": "ac5c798c-15c4-462c-b886-f7f6a387dea5",
+              "similarity_score": 0.4138,
+              "threat_type": "high_frequency_auth",
+              "confidence_score": 0.85,
+              "anomaly_score": 0.7,
+              "summary": "Analysis of raw log lines revealed a series of failed SSH login attempts from a single IP address targeting multiple privileged accounts, indicating a potential brute force attack."
+            },
+            {
+              "incident_id": "96a7bf34-f009-4b58-9fa1-c49dd32b0b7b",
+              "similarity_score": 0.4028,
+              "threat_type": "brute_force",
+              "confidence_score": 0.68,
+              "anomaly_score": 0.8,
+              "summary": "A failed password attempt for the root user via SSH was detected, indicating a potential brute-force attack or unauthorized access attempt."
+            },
+            {
+              "incident_id": "8f4c8a0d-75ef-4b21-ab65-2bd49d577249",
+              "similarity_score": 0.3951,
+              "threat_type": "privilege_transition",
+              "confidence_score": 0.95,
+              "anomaly_score": 0.95,
+              "summary": "Multiple critical and high severity suspicious activities detected, including privilege transitions, loading of a suspicious kernel module, failed privilege escalation attempts, and unauthorized acces"
+            },
+            {
+              "incident_id": "585d882d-6045-4c85-be25-dd87f5a1c55f",
+              "similarity_score": 0.3771,
+              "threat_type": "brute_force",
+              "confidence_score": 0.68,
+              "anomaly_score": 0.8,
+              "summary": "A failed password attempt for the root user was detected via SSH from IP 10.99.88.77. This could indicate a brute-force attack or unauthorized access attempt."
+            }
+          ]
+        },
+        "execution_time_ms": 1428.6
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "unidentified-resource"
+          ],
+          "risk_level": "elevated",
+          "estimated_downtime": "Potential data exfiltration and unauthorized external connections detected, requiring immediate investigation and response.",
+          "estimated_financial_impact": "Manual Audit Required",
+          "blast_radius": "intermediate",
+          "severity_score": 6.4,
+          "scenario_description": "Log analysis reveals multiple rsync processes transferring sensitive files to an external IP and an outbound connection to a known Command and Control (C2) server. This suggests potential malicious activity that could compromise data integrity and security. Continued monitoring and a thorough security assessment are recommended."
+        },
+        "execution_time_ms": 2051.66
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "defer",
+          "confidence_score": 0.75,
+          "threshold": 0.85,
+          "actions_taken": [],
+          "actions_deferred": [
+            {
+              "action_type": "block_ip",
+              "target": "198.51.100.23",
+              "reason": "Confidence 75.00% below threshold 85.00%"
+            }
+          ],
+          "requires_human_review": true,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "10.99.88.77",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-24T18:11:16.507575+00:00",
+              "details": {
+                "warning": "Nova Act SDK missing, falling back to simulation",
+                "action": "block_ip"
+              },
+              "execution_time_ms": 1.55
+            }
+          ]
+        },
+        "execution_time_ms": 0.49
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "## Egress Anomaly Attack Detected \u2014 Awaiting Review\n\nA system activity pattern has been identified and queued for review.\n\n**Risk Level:** ELEVATED\n**Potential Financial Impact:** Manual Audit Required\n**Automated Actions Taken:** 0\n**Actions Pending Review:** 1\n\n**Analysis:** The log lines indicate multiple rsync processes transferring sensitive files to external IPs, including a known C2 server. This suggests potential data exfiltration and command and control activity.",
+          "technical_report": "# System Activity Report \u2014 Identifier be4e0dfa-3552-40a2-8b9c-59f9895c132d\n\n**Timestamp:** 2026-02-24T18:11:53.443978+00:00\n**Activity Type:** egress_anomaly\n**Confidence:** 0.75\n**Anomaly Score:** 0.6\n**Severity Score:** 6.4\n\n## Patterns Detected\n- **[MEDIUM]** high_frequency_access: Multiple rsync processes running in quick succession\n- **[HIGH]** privilege_transition: Transfer of sensitive file /etc/passwd to external IP\n- **[CRITICAL]** unusual_egress: Outbound connection to known Command and Control server\n\n## Affected Systems\n- unidentified-resource\n\n## Actions Taken\n\n## Actions Deferred (Human Review Required)\n- **block_ip** \u2192 198.51.100.23: Confidence 75.00% below threshold 85.00%\n\n## Impact Scenario\nLog analysis reveals multiple rsync processes transferring sensitive files to an external IP and an outbound connection to a known Command and Control (C2) server. This suggests potential malicious activity that could compromise data integrity and security. Continued monitoring and a thorough security assessment are recommended.",
+          "prevention_recommendations": [
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "The pattern was classified as an 'egress_anomaly' due to the detection of high-frequency access, privilege transition, and unusual egress activities, with the latter being critical. The confidence score of 0.75 was influenced by the anomaly score of 0.6 and the critical severity of the unusual egress pattern. Historical pattern similarity, indicated by five similar incidents, contributed to the classification, although with lower individual scores, suggesting a moderate but not definitive correlation.",
+          "metadata": {
+            "generated_at": "2026-02-24T18:12:01.015177+00:00",
+            "incident_id": "be4e0dfa-3552-40a2-8b9c-59f9895c132d"
+          }
+        },
+        "execution_time_ms": 7571.01
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-24T18:11:45.996229+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:45.996229+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:49.955187+00:00",
+        "decision": "Found 5 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:49.955187+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:51.385820+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:53.440648+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:53.442969+00:00",
+        "decision": "Confidence 75.00% below threshold \u2014 deferred to human review"
+      },
+      {
+        "timestamp": "2026-02-24T18:11:53.442969+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:12:02.164512+00:00",
+        "decision": "Pipeline completed in 16169.07ms"
+      }
+    ]
+  },
+  "5ba3f24f-eb75-4a18-b575-db6cfdb6059e": {
+    "incident_id": "5ba3f24f-eb75-4a18-b575-db6cfdb6059e",
+    "status": "completed",
+    "created_at": "2026-02-24T18:14:34.669561+00:00",
+    "updated_at": "2026-02-24T18:14:54.627498+00:00",
+    "raw_input_summary": "3 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.3,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "high-frequency access attempts",
+              "description": "Multiple failed SSH login attempts from the same IP address.",
+              "severity": "medium",
+              "source_ip": "192.168.1.100"
+            },
+            {
+              "pattern_type": "privilege transitions",
+              "description": "Attempts to access high-privilege accounts (admin, root) via SSH.",
+              "severity": "medium",
+              "source_ip": "192.168.1.100"
+            },
+            {
+              "pattern_type": "invalid user attempts",
+              "description": "Attempt to login with an invalid username.",
+              "severity": "low",
+              "source_ip": "192.168.1.100"
+            }
+          ],
+          "summary": "The log lines indicate multiple failed SSH login attempts targeting both regular and privileged accounts from a single IP address, along with an attempt to use an invalid username. This suggests potential brute force or unauthorized access attempts.",
+          "events_analyzed": 3
+        },
+        "execution_time_ms": 4860.39
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "high_frequency_auth",
+          "confidence_score": 0.85,
+          "explanation": "The log lines indicate multiple failed SSH login attempts targeting both regular and privileged accounts from a single IP address, along with an attempt to use an invalid username. This suggests potential brute force or unauthorized access attempts. Similar incidents with high similarity scores and threat types of 'high_frequency_auth' and 'brute_force' further support this classification.",
+          "recommended_action": "block_ip",
+          "similar_incidents": [
+            {
+              "incident_id": "ac5c798c-15c4-462c-b886-f7f6a387dea5",
+              "similarity_score": 0.812,
+              "threat_type": "high_frequency_auth",
+              "confidence_score": 0.85,
+              "anomaly_score": 0.7,
+              "summary": "Analysis of raw log lines revealed a series of failed SSH login attempts from a single IP address targeting multiple privileged accounts, indicating a potential brute force attack."
+            },
+            {
+              "incident_id": "585d882d-6045-4c85-be25-dd87f5a1c55f",
+              "similarity_score": 0.7649,
+              "threat_type": "brute_force",
+              "confidence_score": 0.68,
+              "anomaly_score": 0.8,
+              "summary": "A failed password attempt for the root user was detected via SSH from IP 10.99.88.77. This could indicate a brute-force attack or unauthorized access attempt."
+            },
+            {
+              "incident_id": "96a7bf34-f009-4b58-9fa1-c49dd32b0b7b",
+              "similarity_score": 0.741,
+              "threat_type": "brute_force",
+              "confidence_score": 0.68,
+              "anomaly_score": 0.8,
+              "summary": "A failed password attempt for the root user via SSH was detected, indicating a potential brute-force attack or unauthorized access attempt."
+            },
+            {
+              "incident_id": "fca827ac-22ee-4c7a-a6e5-223533329565",
+              "similarity_score": 0.6245,
+              "threat_type": "brute_force",
+              "confidence_score": 0.68,
+              "anomaly_score": 0.7,
+              "summary": "Multiple failed login attempts and an invalid user attempt from the same source IP indicate potential brute-force attack."
+            },
+            {
+              "incident_id": "70f00733-f4a0-47ae-af5d-0ed91c3bf511",
+              "similarity_score": 0.6119,
+              "threat_type": "brute_force",
+              "confidence_score": 0.9,
+              "anomaly_score": 0.8,
+              "summary": "Detected multiple failed login attempts from a single IP address targeting several high-privilege accounts, indicative of a brute-force attack."
+            }
+          ]
+        },
+        "execution_time_ms": 2041.26
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "unidentified-resource"
+          ],
+          "risk_level": "elevated",
+          "estimated_downtime": "potential security breach due to unauthorized access attempts",
+          "estimated_financial_impact": "Manual Audit Required",
+          "blast_radius": "intermediate",
+          "severity_score": 5.0,
+          "scenario_description": "The logs indicate multiple failed SSH login attempts from a single IP address, targeting both regular and privileged accounts with an invalid username. This suggests a potential brute force attack or unauthorized access attempt, which elevates the risk profile and requires continued monitoring and possible intervention to mitigate security risks."
+        },
+        "execution_time_ms": 2427.43
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.85,
+          "threshold": 0.85,
+          "actions_taken": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.100",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-24T18:14:44.938320+00:00",
+              "details": {
+                "warning": "Nova Act SDK missing, falling back to simulation",
+                "action": "block_ip"
+              },
+              "execution_time_ms": 2.81
+            }
+          ],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.100",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-24T18:14:44.938320+00:00",
+              "details": {
+                "warning": "Nova Act SDK missing, falling back to simulation",
+                "action": "block_ip"
+              },
+              "execution_time_ms": 2.81
+            }
+          ]
+        },
+        "execution_time_ms": 9.56
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "## High Frequency Auth Attack Mitigated\n\nA system activity pattern has been automatically optimized.\n\n**Risk Level:** ELEVATED\n**Potential Financial Impact:** Manual Audit Required\n**Automated Actions Taken:** 1\n**Actions Pending Review:** 0\n\n**Analysis:** The log lines indicate multiple failed SSH login attempts targeting both regular and privileged accounts from a single IP address, along with an attempt to use an invalid username. This suggests potential brute force or unauthorized access attempts. Similar incidents with high similarity scores and threat types of 'high_frequency_auth' and 'brute_force' further support this classification.",
+          "technical_report": "# System Activity Report \u2014 Identifier 5ba3f24f-eb75-4a18-b575-db6cfdb6059e\n\n**Timestamp:** 2026-02-24T18:14:44.943972+00:00\n**Activity Type:** high_frequency_auth\n**Confidence:** 0.85\n**Anomaly Score:** 0.3\n**Severity Score:** 5.0\n\n## Patterns Detected\n- **[MEDIUM]** high-frequency access attempts: Multiple failed SSH login attempts from the same IP address.\n- **[MEDIUM]** privilege transitions: Attempts to access high-privilege accounts (admin, root) via SSH.\n- **[LOW]** invalid user attempts: Attempt to login with an invalid username.\n\n## Affected Systems\n- unidentified-resource\n\n## Actions Taken\n- **block_ip** \u2192 192.168.1.100 (\u2705 Success, simulated)\n\n## Impact Scenario\nThe logs indicate multiple failed SSH login attempts from a single IP address, targeting both regular and privileged accounts with an invalid username. This suggests a potential brute force attack or unauthorized access attempt, which elevates the risk profile and requires continued monitoring and possible intervention to mitigate security risks.",
+          "prevention_recommendations": [
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "The pattern was classified as 'high_frequency_auth' due to the detection of high-frequency access attempts, privilege transitions, and invalid user attempts. The confidence score of 0.85 was influenced by the anomaly score of 0.3 and the presence of multiple failed SSH login attempts targeting both regular and privileged accounts. Historical pattern similarity, with similar incidents scoring between 0.741 and 0.812, contributed to the classification decision.",
+          "metadata": {
+            "generated_at": "2026-02-24T18:14:53.658428+00:00",
+            "incident_id": "5ba3f24f-eb75-4a18-b575-db6cfdb6059e"
+          }
+        },
+        "execution_time_ms": 8714.62
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-24T18:14:34.670567+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-24T18:14:34.671573+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:14:40.456942+00:00",
+        "decision": "Found 5 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-24T18:14:40.456942+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:14:42.501248+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:14:44.930056+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:14:44.943415+00:00",
+        "decision": "Confidence 85.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-24T18:14:44.943415+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:14:54.627498+00:00",
+        "decision": "Pipeline completed in 19958.28ms"
+      }
+    ]
+  },
+  "e3dbe965-ec60-4107-b8b7-28006dde91f1": {
+    "incident_id": "e3dbe965-ec60-4107-b8b7-28006dde91f1",
+    "status": "completed",
+    "created_at": "2026-02-24T18:15:07.142182+00:00",
+    "updated_at": "2026-02-24T18:15:22.961982+00:00",
+    "raw_input_summary": "3 log entries submitted",
+    "stages": {
+      "log_analysis": {
+        "agent": "LogIntelligence",
+        "result": {
+          "anomaly_score": 0.3,
+          "suspicious_patterns": [
+            {
+              "pattern_type": "high_frequency_access_attempts",
+              "description": "Multiple failed SSH login attempts from the same IP address.",
+              "severity": "medium",
+              "source_ip": "192.168.1.100"
+            }
+          ],
+          "summary": "The log lines indicate multiple failed SSH login attempts from the same IP address, suggesting a potential brute force attack.",
+          "events_analyzed": 3
+        },
+        "execution_time_ms": 2386.07
+      },
+      "threat_classification": {
+        "agent": "ThreatClassification",
+        "result": {
+          "threat_type": "high_frequency_auth",
+          "confidence_score": 0.85,
+          "explanation": "The log lines indicate multiple failed SSH login attempts from the same IP address, suggesting a potential brute force attack. Similar incidents with high similarity scores and matching threat types further corroborate this assessment.",
+          "recommended_action": "block_ip",
+          "similar_incidents": [
+            {
+              "incident_id": "ac5c798c-15c4-462c-b886-f7f6a387dea5",
+              "similarity_score": 0.8529,
+              "threat_type": "high_frequency_auth",
+              "confidence_score": 0.85,
+              "anomaly_score": 0.7,
+              "summary": "Analysis of raw log lines revealed a series of failed SSH login attempts from a single IP address targeting multiple privileged accounts, indicating a potential brute force attack."
+            },
+            {
+              "incident_id": "5ba3f24f-eb75-4a18-b575-db6cfdb6059e",
+              "similarity_score": 0.8461,
+              "threat_type": "high_frequency_auth",
+              "confidence_score": 0.85,
+              "anomaly_score": 0.3,
+              "summary": "The log lines indicate multiple failed SSH login attempts targeting both regular and privileged accounts from a single IP address, along with an attempt to use an invalid username. This suggests poten"
+            },
+            {
+              "incident_id": "585d882d-6045-4c85-be25-dd87f5a1c55f",
+              "similarity_score": 0.7734,
+              "threat_type": "brute_force",
+              "confidence_score": 0.68,
+              "anomaly_score": 0.8,
+              "summary": "A failed password attempt for the root user was detected via SSH from IP 10.99.88.77. This could indicate a brute-force attack or unauthorized access attempt."
+            },
+            {
+              "incident_id": "96a7bf34-f009-4b58-9fa1-c49dd32b0b7b",
+              "similarity_score": 0.7632,
+              "threat_type": "brute_force",
+              "confidence_score": 0.68,
+              "anomaly_score": 0.8,
+              "summary": "A failed password attempt for the root user via SSH was detected, indicating a potential brute-force attack or unauthorized access attempt."
+            },
+            {
+              "incident_id": "fca827ac-22ee-4c7a-a6e5-223533329565",
+              "similarity_score": 0.7398,
+              "threat_type": "brute_force",
+              "confidence_score": 0.68,
+              "anomaly_score": 0.7,
+              "summary": "Multiple failed login attempts and an invalid user attempt from the same source IP indicate potential brute-force attack."
+            }
+          ]
+        },
+        "execution_time_ms": 1835.14
+      },
+      "impact_simulation": {
+        "agent": "ImpactSimulation",
+        "result": {
+          "affected_systems": [
+            "unidentified-resource"
+          ],
+          "risk_level": "elevated",
+          "estimated_downtime": "Increased load on authentication services due to repeated failed login attempts.",
+          "estimated_financial_impact": "Manual Audit Required",
+          "blast_radius": "intermediate",
+          "severity_score": 5.0,
+          "scenario_description": "The logs indicate multiple failed SSH login attempts from a single IP address, which suggests a potential brute force attack. This could lead to increased load on authentication services and may pose a security risk if not addressed. Continued monitoring and potential mitigation measures are recommended."
+        },
+        "execution_time_ms": 1930.51
+      },
+      "response": {
+        "agent": "Response",
+        "result": {
+          "decision": "execute",
+          "confidence_score": 0.85,
+          "threshold": 0.85,
+          "actions_taken": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.100",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-24T18:15:14.234673+00:00",
+              "details": {
+                "warning": "Nova Act SDK missing, falling back to simulation",
+                "action": "block_ip"
+              },
+              "execution_time_ms": 1.6
+            }
+          ],
+          "actions_deferred": [],
+          "requires_human_review": false,
+          "audit_log": [
+            {
+              "action_type": "block_ip",
+              "target": "192.168.1.100",
+              "success": true,
+              "simulated": true,
+              "timestamp": "2026-02-24T18:15:14.234673+00:00",
+              "details": {
+                "warning": "Nova Act SDK missing, falling back to simulation",
+                "action": "block_ip"
+              },
+              "execution_time_ms": 1.6
+            }
+          ]
+        },
+        "execution_time_ms": 7.51
+      },
+      "reporting": {
+        "agent": "Reporting",
+        "result": {
+          "executive_summary": "## High Frequency Auth Attack Mitigated\n\nA system activity pattern has been automatically optimized.\n\n**Risk Level:** ELEVATED\n**Potential Financial Impact:** Manual Audit Required\n**Automated Actions Taken:** 1\n**Actions Pending Review:** 0\n\n**Analysis:** The log lines indicate multiple failed SSH login attempts from the same IP address, suggesting a potential brute force attack. Similar incidents with high similarity scores and matching threat types further corroborate this assessment.",
+          "technical_report": "# System Activity Report \u2014 Identifier e3dbe965-ec60-4107-b8b7-28006dde91f1\n\n**Timestamp:** 2026-02-24T18:15:14.241876+00:00\n**Activity Type:** high_frequency_auth\n**Confidence:** 0.85\n**Anomaly Score:** 0.3\n**Severity Score:** 5.0\n\n## Patterns Detected\n- **[MEDIUM]** high_frequency_access_attempts: Multiple failed SSH login attempts from the same IP address.\n\n## Affected Systems\n- unidentified-resource\n\n## Actions Taken\n- **block_ip** \u2192 192.168.1.100 (\u2705 Success, simulated)\n\n## Impact Scenario\nThe logs indicate multiple failed SSH login attempts from a single IP address, which suggests a potential brute force attack. This could lead to increased load on authentication services and may pose a security risk if not addressed. Continued monitoring and potential mitigation measures are recommended.",
+          "prevention_recommendations": [
+            "Review and update access control policies",
+            "Conduct security awareness training for all employees",
+            "Implement continuous monitoring and alerting"
+          ],
+          "nova_reasoning_summary": "- The generated text has been blocked by our content filters.",
+          "metadata": {
+            "generated_at": "2026-02-24T18:15:22.173387+00:00",
+            "incident_id": "e3dbe965-ec60-4107-b8b7-28006dde91f1"
+          }
+        },
+        "execution_time_ms": 7932.77
+      }
+    },
+    "decision_log": [
+      {
+        "timestamp": "2026-02-24T18:15:07.142182+00:00",
+        "decision": "Pipeline started"
+      },
+      {
+        "timestamp": "2026-02-24T18:15:07.143805+00:00",
+        "decision": "Running LogIntelligence agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:15:10.457711+00:00",
+        "decision": "Found 5 similar past incidents"
+      },
+      {
+        "timestamp": "2026-02-24T18:15:10.458274+00:00",
+        "decision": "Running ThreatClassification agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:15:12.295895+00:00",
+        "decision": "Running ImpactSimulation agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:15:14.228673+00:00",
+        "decision": "Running Response agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:15:14.239828+00:00",
+        "decision": "Confidence 85.00% \u2014 automated response executed"
+      },
+      {
+        "timestamp": "2026-02-24T18:15:14.239828+00:00",
+        "decision": "Running Reporting agent"
+      },
+      {
+        "timestamp": "2026-02-24T18:15:22.961982+00:00",
+        "decision": "Pipeline completed in 15819.96ms"
+      }
+    ]
   }
 }

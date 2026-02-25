@@ -96,11 +96,13 @@ class ReportingAgent(BaseAgent):
                 self._nova.invoke(
                     prompt=json.dumps(reasoning),
                     system_prompt=(
-                        "You are a cybersecurity report writer. Generate executive and technical incident reports. "
-                        "You MUST respond with ONLY valid JSON (no markdown, no explanation outside JSON). "
+                        "You are a technical communications specialist. Generate executive and technical activity reports based on system metrics. "
+                        "Focus on reliability, resource allocation, and operational continuity. "
+                        "Use objective and technical language; avoid dramatic alarmist terms. "
+                        "You MUST respond with ONLY valid JSON. "
                         "Use this exact schema: "
                         '{"executive_summary": "<string - concise executive summary paragraph>", '
-                        '"technical_report": "<string - detailed markdown-formatted technical forensic report>"}'
+                        '"technical_report": "<string - detailed markdown-formatted technical activity report>"}'
                     ),
                     context="report_generation",
                 )
@@ -136,11 +138,11 @@ class ReportingAgent(BaseAgent):
     @staticmethod
     def _build_executive_summary(exec_data: dict, reasoning: dict) -> str:
         """Build a human-readable executive summary."""
-        status = "automatically mitigated" if exec_data["auto_mitigated"] else "detected and flagged for review"
+        status = "automatically optimized" if exec_data["auto_mitigated"] else "identified and queued for review"
         lines = [
             f"## {exec_data['headline']}",
             "",
-            f"A cybersecurity incident has been {status}.",
+            f"A system activity pattern has been {status}.",
             "",
             f"**Risk Level:** {exec_data['risk_level'].upper()}",
             f"**Potential Financial Impact:** {exec_data['financial_impact']}",
@@ -158,10 +160,10 @@ class ReportingAgent(BaseAgent):
         """Build a detailed technical forensic report."""
         tech = reasoning["technical"]
         lines = [
-            f"# Technical Forensic Report — Incident {tech['incident_id']}",
+            f"# System Activity Report — Identifier {tech['incident_id']}",
             "",
             f"**Timestamp:** {tech['timestamp']}",
-            f"**Threat Type:** {tech['threat_type']}",
+            f"**Activity Type:** {tech['threat_type']}",
             f"**Confidence:** {tech.get('confidence_score', 'N/A')}",
             f"**Anomaly Score:** {tech.get('anomaly_score', 'N/A')}",
             f"**Severity Score:** {tech.get('severity_score', 'N/A')}",
@@ -256,12 +258,13 @@ class ReportingAgent(BaseAgent):
                 self._nova.invoke(
                     prompt=reasoning_prompt,
                     system_prompt=(
-                        "You are a cybersecurity AI analyst. Write a concise "
-                        "'Nova AI Reasoning Summary' that explains WHY "
-                        "the threat was classified as it was, what anomaly signals "
+                        "You are a system behavior analyst. Write a concise "
+                        "'Activity Reasoning Summary' that explains WHY "
+                        "the pattern was classified as it was, what behavioral signals "
                         "influenced the decision, how confidence was determined, "
-                        "and whether past incident similarity contributed. "
-                        "You MUST respond with ONLY valid JSON (no markdown, no explanation outside JSON). "
+                        "and whether historical pattern similarity contributed. "
+                        "Avoid dramatic terminology; be technical and objective. "
+                        "You MUST respond with ONLY valid JSON. "
                         'Use this exact schema: {"reasoning_summary": "<string - 3-5 sentences in third-person analytical tone>"}'
                     ),
                     context="nova_reasoning_summary",
